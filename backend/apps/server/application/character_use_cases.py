@@ -10,6 +10,13 @@ from apps.server.domain.appearance import (
     appearance_value,
     parse_appearance,
 )
+from apps.server.domain.character_edit import (
+    EnchantedSkillTransfer,
+    ICharacterEditBridge,
+    SubclassDisposition,
+    validate_enchanted_skill_transfers,
+)
+from apps.server.domain.class_catalog import available_class_ids, class_race
 from apps.server.domain.exceptions import CharacterServiceUnavailableError
 from apps.server.domain.gateways import ILineageGateway
 from apps.server.domain.repositories import (
@@ -19,11 +26,16 @@ from apps.server.domain.repositories import (
     IServicePriceRepository,
 )
 from apps.server.domain.services import TAVERN_SERVICES
+from apps.server.domain.skill_catalog import ISkillCatalog
 from apps.server.domain.towns import get_town, town_catalog
 from apps.server.domain.unstuck import normalize_unstuck
 from apps.wallet.domain.repositories import IWalletRepository
 from common.architecture.base import UnitOfWork, UseCase
-from common.architecture.exceptions import AuthorizationError, ValidationDomainError
+from common.architecture.exceptions import (
+    AuthorizationError,
+    ConflictError,
+    ValidationDomainError,
+)
 
 _NICK_MIN, _NICK_MAX = 2, 16
 
@@ -42,6 +54,24 @@ class CharacterServiceInput:
     login: str
     char_id: int
     request_key: UUID | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ChangeBaseClassInput:
+    """Pedido de troca de classe-base processado exclusivamente pelo core Journey."""
+
+    actor: CharacterServiceInput
+    target_class_id: int
+    disposition: SubclassDisposition
+    transfers: tuple[EnchantedSkillTransfer, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class PreviewBaseClassSkillsInput:
+    """Consulta autenticada das skills que o core aceita para uma classe alvo."""
+
+    actor: CharacterServiceInput
+    target_class_id: int
 
 
 class ChangeNicknameUseCase(UseCase[tuple[CharacterServiceInput, str], None]):
@@ -204,6 +234,17 @@ class ListServicePricesUseCase(UseCase[None, dict]):
                 continue
             payload[code] = str(row.price if row else self._prices.get_price(code))
             payload["available"].append(code)
+        class_price_codes = (
+            "CLASS_CHANGE_SAME_RACE",
+            "CLASS_CHANGE_CROSS_RACE",
+            "SUBCLASS_KEEP",
+            "SUBCLASS_RESERVE",
+        )
+        class_prices = {item.code: item for item in self._prices.list_all()}
+        if all(class_prices.get(code) is not None and class_prices[code].active for code in class_price_codes):
+            payload.update({code: str(class_prices[code].price) for code in class_price_codes})
+            payload["available"].append("CHANGE_BASE_CLASS")
+            payload["catalog"]["class_change"] = {"class_ids": available_class_ids()}
         return payload
 
 
@@ -396,3 +437,144 @@ class ClearPkUseCase(UseCase[CharacterServiceInput, None]):
             operations=self._operations,
             unit_of_work=self._unit_of_work,
         )
+
+
+class ChangeBaseClassUseCase(UseCase[ChangeBaseClassInput, None]):
+    """Cobra e delega uma troca de classe-base atômica ao bridge Journey.
+
+    O bloqueio é criado antes da reserva de saldo, desconectando o personagem
+    e impedindo um login durante a alteração. Só é removido após confirmação
+    inequívoca; uma resposta perdida mantém o bloqueio e a operação pendente
+    para a conciliação administrativa, evitando cobrança duplicada ou escrita
+    concorrente no banco do jogo.
+    """
+
+    def __init__(
+        self,
+        lineage: ILineageGateway,
+        access: IAccountAccessService,
+        prices: IServicePriceRepository,
+        wallets: IWalletRepository,
+        operations: ICharacterServiceOperationRepository,
+        bridge: ICharacterEditBridge,
+        unit_of_work: UnitOfWork,
+    ) -> None:
+        self._lineage = lineage
+        self._access = access
+        self._prices = prices
+        self._wallets = wallets
+        self._operations = operations
+        self._bridge = bridge
+        self._unit_of_work = unit_of_work
+
+    def execute(self, data: ChangeBaseClassInput) -> None:
+        actor = data.actor
+        if not self._access.can_access(actor.user_id, actor.username, actor.login):
+            raise AuthorizationError()
+        character = self._lineage.get_character(actor.login, actor.char_id)
+        if character is None:
+            raise ValidationDomainError("Personagem não encontrado.")
+        source_enchants = {
+            skill.skill_id: skill.level % 100
+            for skill in self._lineage.list_character_skills(actor.char_id)
+            if skill.class_index == 0 and skill.level >= 100
+        }
+        validate_enchanted_skill_transfers(
+            transfers=data.transfers,
+            available_source_enchants=source_enchants,
+        )
+        source_race = class_race(character.class_id)
+        target_race = class_race(data.target_class_id)
+        base_code = (
+            "CLASS_CHANGE_SAME_RACE"
+            if source_race == target_race
+            else "CLASS_CHANGE_CROSS_RACE"
+        )
+        amount = self._active_price(base_code)
+        if data.disposition is SubclassDisposition.KEEP:
+            amount += self._active_price("SUBCLASS_KEEP")
+        elif data.disposition is SubclassDisposition.RESERVE:
+            amount += self._active_price("SUBCLASS_RESERVE")
+        value = self._value(data)
+
+        self._bridge.lock_character(actor.char_id)
+        keep_locked = False
+        try:
+            execute_paid_service(
+                actor,
+                service="CHANGE_BASE_CLASS",
+                value=value,
+                price=amount,
+                lineage=self._lineage,
+                access=self._access,
+                wallets=self._wallets,
+                operations=self._operations,
+                unit_of_work=self._unit_of_work,
+                require_offline=False,
+                apply=lambda: self._bridge.change_base_class(
+                    actor.char_id,
+                    target_class_id=data.target_class_id,
+                    disposition=data.disposition,
+                    transfers=data.transfers,
+                ),
+            )
+        except ConflictError as exc:
+            # A camada de pagamento usa operation_id exclusivamente quando o
+            # core pode ter confirmado antes de a conexão cair.
+            keep_locked = "operation_id" in exc.details
+            raise
+        finally:
+            if not keep_locked:
+                self._bridge.unlock_character(actor.char_id)
+
+    def _active_price(self, code: str):
+        row = next((item for item in self._prices.list_all() if item.code == code), None)
+        if row is None or not row.active:
+            raise CharacterServiceUnavailableError()
+        return row.price
+
+    @staticmethod
+    def _value(data: ChangeBaseClassInput) -> str:
+        transfers = ";".join(
+            f"{item.source_skill_id},{item.target_skill_id},{item.source_enchant}"
+            for item in data.transfers
+        ) or "-"
+        value = f"{data.target_class_id}|{data.disposition.value}|{transfers}"
+        if len(value) > 1024:
+            raise ValidationDomainError("Há muitas transferências de skill.")
+        return value
+
+
+class PreviewBaseClassSkillsUseCase(UseCase[PreviewBaseClassSkillsInput, list[dict]]):
+    """Expõe a árvore real do Journey ao seletor sem permitir qualquer mutação."""
+
+    def __init__(
+        self,
+        lineage: ILineageGateway,
+        access: IAccountAccessService,
+        bridge: ICharacterEditBridge,
+        skills: ISkillCatalog,
+    ) -> None:
+        self._lineage = lineage
+        self._access = access
+        self._bridge = bridge
+        self._skills = skills
+
+    def execute(self, data: PreviewBaseClassSkillsInput) -> list[dict]:
+        actor = data.actor
+        if not self._access.can_access(actor.user_id, actor.username, actor.login):
+            raise AuthorizationError()
+        if self._lineage.get_character(actor.login, actor.char_id) is None:
+            raise ValidationDomainError("Personagem não encontrado.")
+        class_race(data.target_class_id)
+        return [
+            {
+                "skill_id": skill_id,
+                "level": level,
+                "name": self._skills.display_name(skill_id, fallback=f"Skill {skill_id}"),
+            }
+            for skill_id, level in self._bridge.preview_base_class_skills(
+                actor.char_id,
+                target_class_id=data.target_class_id,
+            )
+        ]

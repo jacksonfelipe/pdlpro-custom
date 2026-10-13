@@ -336,6 +336,38 @@ class ClearStatusSerializer(serializers.Serializer):
     request_key = serializers.UUIDField(required=False)
 
 
+class EnchantedSkillTransferSerializer(serializers.Serializer):
+    """Valida o mapeamento um-para-um de enchant informado pelo jogador."""
+
+    source_skill_id = serializers.IntegerField(min_value=1)
+    target_skill_id = serializers.IntegerField(min_value=1)
+    source_enchant = serializers.IntegerField(min_value=1, max_value=99)
+
+
+class ChangeBaseClassSerializer(serializers.Serializer):
+    """Valida uma troca de classe; o Journey valida a árvore final no core."""
+
+    login = serializers.CharField(max_length=45)
+    char_id = serializers.IntegerField(min_value=1)
+    target_class_id = serializers.IntegerField(min_value=0, max_value=999)
+    subclass_disposition = serializers.ChoiceField(choices=["keep", "delete", "reserve"])
+    transfers = EnchantedSkillTransferSerializer(many=True, required=False, default=list)
+    request_key = serializers.UUIDField(required=False)
+
+    def validate_transfers(self, value):
+        if len(value) > 32:
+            raise serializers.ValidationError(_("Escolha no máximo 32 transferências de skill."))
+        return value
+
+
+class BaseClassSkillSerializer(serializers.Serializer):
+    """Representa uma skill candidata retornada pela árvore do Journey."""
+
+    skill_id = serializers.IntegerField()
+    level = serializers.IntegerField()
+    name = serializers.CharField()
+
+
 class PurchaseSlotSerializer(serializers.Serializer):
     """Valida a quantidade de slots adicionais de vínculo a comprar.
 

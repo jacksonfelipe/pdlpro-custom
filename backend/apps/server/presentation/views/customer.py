@@ -33,22 +33,32 @@ from apps.server.application.account_use_cases import (
 )
 from apps.server.application.character_use_cases import (
     ChangeAppearanceUseCase,
+    ChangeBaseClassInput,
+    ChangeBaseClassUseCase,
     ChangeNicknameUseCase,
     ChangeSexUseCase,
     CharacterServiceInput,
     ClearKarmaUseCase,
     ClearPkUseCase,
     ListServicePricesUseCase,
+    PreviewBaseClassSkillsInput,
+    PreviewBaseClassSkillsUseCase,
     PurchaseLinkSlotInput,
     PurchaseLinkSlotUseCase,
     TeleportCharacterUseCase,
     UnstuckCharacterUseCase,
 )
 from apps.server.domain.appearance import appearance_value
+from apps.server.domain.character_edit import (
+    EnchantedSkillTransfer,
+    SubclassDisposition,
+)
 from apps.server.domain.skill_catalog import ISkillCatalog
 from apps.server.presentation.serializers import (
     AccessibleAccountSerializer,
+    BaseClassSkillSerializer,
     ChangeAppearanceSerializer,
+    ChangeBaseClassSerializer,
     ChangeNicknameSerializer,
     ChangeSexSerializer,
     ClearStatusSerializer,
@@ -66,6 +76,7 @@ from apps.server.presentation.serializers import (
     UpdateGamePasswordSerializer,
 )
 from apps.server.presentation.skill_metadata import dump_learned_skill
+from common.architecture.exceptions import ValidationDomainError
 from common.views import InjectedAPIView
 
 
@@ -423,6 +434,76 @@ class ChangeSexView(InjectedAPIView):
             )
         )
         return Response({"ok": True})
+
+
+class ChangeBaseClassView(InjectedAPIView):
+    """Entrada autenticada para a troca transacional de classe Journey."""
+
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["Conta Lineage"],
+        summary=gettext_lazy("Trocar classe-base"),
+        description=gettext_lazy("Desconecta, bloqueia e troca a classe pelo gameserver de forma atômica."),
+        request=ChangeBaseClassSerializer,
+    )
+    def post(self, request):
+        serializer = ChangeBaseClassSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        self.resolve(ChangeBaseClassUseCase).execute(
+            ChangeBaseClassInput(
+                actor=CharacterServiceInput(
+                    user_id=request.user.id,
+                    username=request.user.username,
+                    login=data["login"],
+                    char_id=data["char_id"],
+                    request_key=data.get("request_key"),
+                ),
+                target_class_id=data["target_class_id"],
+                disposition=SubclassDisposition(data["subclass_disposition"]),
+                transfers=tuple(
+                    EnchantedSkillTransfer(
+                        source_skill_id=item["source_skill_id"],
+                        target_skill_id=item["target_skill_id"],
+                        source_enchant=item["source_enchant"],
+                    )
+                    for item in data["transfers"]
+                ),
+            )
+        )
+        return Response({"ok": True})
+
+
+class BaseClassSkillsView(InjectedAPIView):
+    """Lista, via bridge, as skills elegíveis da nova classe escolhida."""
+
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["Conta Lineage"],
+        summary=gettext_lazy("Skills da nova classe"),
+        description=gettext_lazy("Consulta a árvore de skills do Journey sem alterar o personagem."),
+        responses={200: BaseClassSkillSerializer(many=True)},
+    )
+    def get(self, request, char_id: int):
+        login = request.query_params.get("login") or request.user.username
+        try:
+            target_class_id = int(request.query_params["target_class_id"])
+        except (KeyError, TypeError, ValueError):
+            raise ValidationDomainError("Informe uma classe de destino válida.")
+        data = self.resolve(PreviewBaseClassSkillsUseCase).execute(
+            PreviewBaseClassSkillsInput(
+                actor=CharacterServiceInput(
+                    user_id=request.user.id,
+                    username=request.user.username,
+                    login=login,
+                    char_id=char_id,
+                ),
+                target_class_id=target_class_id,
+            )
+        )
+        return Response(BaseClassSkillSerializer(data, many=True).data)
 
 
 class UnstuckView(InjectedAPIView):

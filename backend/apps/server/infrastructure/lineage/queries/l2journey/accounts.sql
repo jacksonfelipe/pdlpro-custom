@@ -1,0 +1,25 @@
+-- L2Journey — accounts.accessLevel and timestamp-managed created_time.
+
+-- name: get_account
+SELECT login, COALESCE(email, '') AS email, linked_uuid FROM accounts WHERE login = :login LIMIT 1
+
+-- name: find_accounts_by_email
+SELECT login, COALESCE(email, '') AS email, linked_uuid FROM accounts WHERE email = :email
+
+-- name: get_account_by_login_and_email
+SELECT login, COALESCE(email, '') AS email, linked_uuid FROM accounts WHERE login = :login AND email = :email LIMIT 1
+
+-- name: get_account_password
+SELECT password FROM accounts WHERE login = :login LIMIT 1
+
+-- name: register_account
+INSERT INTO accounts (login, password, accessLevel, email) VALUES (:login, :password, 0, :email)
+
+-- name: link_account
+UPDATE accounts SET linked_uuid = :uuid WHERE login = :login
+
+-- name: unlink_account
+UPDATE accounts SET linked_uuid = NULL WHERE login = :login
+
+-- name: update_account_password
+UPDATE accounts SET password = :password WHERE login = :login LIMIT 1

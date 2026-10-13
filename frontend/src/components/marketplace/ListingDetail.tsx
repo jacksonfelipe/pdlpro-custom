@@ -23,12 +23,16 @@ interface ListingDetailProps {
   listing: ApiCharacterListing
   isOwner: boolean
   pending: boolean
+  deliveryAccounts: Array<{ login: string; count?: number; canReceive: boolean }>
+  deliveryLogin: string
+  allLinkedAccountsFull: boolean
+  onDeliveryLoginChange: (login: string) => void
   onClose: () => void
   onBuy: (id: string) => void
   onCancel: (id: string) => void
 }
 
-export function ListingDetail({ listing, isOwner, pending, onClose, onBuy, onCancel }: ListingDetailProps) {
+export function ListingDetail({ listing, isOwner, pending, deliveryAccounts, deliveryLogin, allLinkedAccountsFull, onDeliveryLoginChange, onClose, onBuy, onCancel }: ListingDetailProps) {
   const { t } = useTranslation('panel')
   const status = listingStatusFor(listing.status, t)
   const [selectedItem, setSelectedItem] = useState<CharacterItemDetail | null>(null)
@@ -126,10 +130,28 @@ export function ListingDetail({ listing, isOwner, pending, onClose, onBuy, onCan
               </Button>
             ) : null}
             {!isOwner && listing.status === 'for_sale' ? (
-              <MicroResource code="marketplace-buy"><Button type="button" onClick={() => onBuy(listing.id)} disabled={pending}>
-                <ShoppingCart aria-hidden="true" />
-                {pending ? t('marketplace.detail.processing') : t('marketplace.detail.buy')}
-              </Button></MicroResource>
+              <MicroResource code="marketplace-buy">
+                {deliveryAccounts.length > 0 ? (
+                  <label className="account-action-form">
+                    {t('marketplace.detail.deliveryAccount')}
+                    <select value={deliveryLogin} onChange={(event) => onDeliveryLoginChange(event.target.value)} disabled={pending}>
+                      <option value="">{t('marketplace.detail.deliveryAuto')}</option>
+                      {deliveryAccounts.map((account) => (
+                        <option key={account.login} value={account.login} disabled={!account.canReceive}>
+                          {t('marketplace.detail.deliveryOption', { login: account.login, count: account.count ?? '…' })}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ) : (
+                  <small>{t('marketplace.detail.deliveryPendingAccount')}</small>
+                )}
+                {allLinkedAccountsFull ? <small className="marketplace-owner-note">{t('marketplace.detail.deliveryFull')}</small> : null}
+                <Button type="button" onClick={() => onBuy(listing.id)} disabled={pending || allLinkedAccountsFull}>
+                  <ShoppingCart aria-hidden="true" />
+                  {pending ? t('marketplace.detail.processing') : t('marketplace.detail.buy')}
+                </Button>
+              </MicroResource>
             ) : null}
             {isOwner ? <small className="marketplace-owner-note">{t('marketplace.detail.ownerNote')}</small> : null}
           </aside>

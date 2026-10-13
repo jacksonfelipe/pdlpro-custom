@@ -20,6 +20,7 @@ export type {
 export { lineageApi, inventoryApi, serviceAvailable } from './domain/lineage.service'
 export type {
   ApiAccessibleAccount,
+  ApiBaseClassSkill,
   ApiCharacterEquipmentItem,
   ApiGameCharacter,
   ApiGameItem,

@@ -19,7 +19,9 @@ from apps.marketplace.infrastructure.models import CharacterListing
 from apps.marketplace.infrastructure.repositories import (
     DjangoCharacterListingRepository,
 )
+from apps.server.domain.access import AccessibleAccount
 from apps.server.domain.gateways import ILineageGateway
+from apps.server.infrastructure.character_custody import GatewayCharacterCustodyService
 from apps.wallet.domain.entities import InsufficientBalanceError, WalletEntity
 from apps.wallet.infrastructure.models import Wallet, WalletTransaction
 from apps.wallet.infrastructure.repositories import DjangoWalletRepository
@@ -111,6 +113,13 @@ class RecordingLineage:
         self.transfers.append((char_id, new_account))
 
 
+class ActiveBuyerAccountAccess:
+    """Expõe uma conta primária válida para os testes de compra direta."""
+
+    def list_accounts(self, user_id: UUID, username: str) -> list[AccessibleAccount]:
+        return [AccessibleAccount(login=username, is_primary=True, linked=True)]
+
+
 class StaleListingRead:
     def __init__(self, inner: DjangoCharacterListingRepository, snapshot: CharacterListingEntity) -> None:
         self._inner = inner
@@ -174,7 +183,14 @@ def test_losing_buyer_does_not_debit_or_transfer_when_claim_fails():
     wallets.by_user[buyer_one] = MemoryWallet(uuid4(), buyer_one, Decimal(40))
     wallets.by_user[buyer_two] = MemoryWallet(uuid4(), buyer_two, Decimal(40))
     lineage = RecordingLineage()
-    use_case = PurchaseListingUseCase(listings, lineage, wallets, NullUnitOfWork())
+    use_case = PurchaseListingUseCase(
+        listings,
+        lineage,
+        GatewayCharacterCustodyService(lineage),
+        ActiveBuyerAccountAccess(),
+        wallets,
+        NullUnitOfWork(),
+    )
 
     first = use_case.execute(PurchaseListingInput(buyer_one, "buyer1", listings.listing.id))
     assert first.status == "sold"
@@ -256,6 +272,8 @@ def test_stale_for_sale_read_does_not_double_charge_or_transfer(settings):
     use_case = PurchaseListingUseCase(
         StaleListingRead(inner, snapshot),
         lineage,
+        GatewayCharacterCustodyService(lineage),
+        ActiveBuyerAccountAccess(),
         DjangoWalletRepository(),
         DjangoUnitOfWork(),
     )

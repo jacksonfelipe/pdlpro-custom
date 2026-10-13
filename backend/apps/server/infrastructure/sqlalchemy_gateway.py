@@ -145,6 +145,23 @@ class SqlAlchemyLineageGateway(ILineageGateway):
         return bool(settings.LINEAGE_ALLOW_ONLINE_DELIVERY) and self._sql.has("online_delivery_ready")
 
     def assert_exchange_ready(self) -> None:
+        exchange_queries = (
+            "exchange_table_engines",
+            "exchange_create_receipts",
+            "exchange_insert_receipt",
+            "exchange_get_receipt",
+            "exchange_complete_receipt",
+            "exchange_reject_receipt",
+            "exchange_character",
+            "exchange_stacks",
+            "exchange_decrement",
+            "exchange_delete_empty",
+            "deposit_item",
+        )
+        if not all(self._sql.has(name) for name in exchange_queries):
+            raise RuntimeError(
+                "O dialeto Lineage não possui uma fila de entrega transacional para o câmbio."
+            )
         rows = self._fetch("exchange_table_engines")
         engines = {row["table_name"].lower(): (row["engine"] or "").upper() for row in rows}
         required = {"characters", "items", "items_delayed", "pdl_exchange_receipts"}
@@ -398,8 +415,10 @@ class SqlAlchemyLineageGateway(ILineageGateway):
         required_binds = {"insert_character": {"title", "x", "y", "z"},
                           "insert_character_subclass": {"level", "xp", "sp"}}
         for query, binds in required_binds.items():
-            if not binds.issubset(BIND_RE.findall(self._sql[query])):
-                raise CharacterServiceUnavailableError()
+            if not self._sql.has(query) or not binds.issubset(BIND_RE.findall(self._sql[query])):
+                raise CharacterServiceUnavailableError(
+                    "Criação de personagem não é suportada por este dialeto Lineage."
+                )
         # Named lock serializes panel allocations; it is scoped to this same connection.
         with self._engine_or_create().connect() as connection:
             acquired = connection.execute(text(self._sql["creation_lock"])).scalar()
@@ -508,25 +527,42 @@ class SqlAlchemyLineageGateway(ILineageGateway):
         return GameItem(item_id, item_display_name(item_id), quantity, withdrawn_enchant)
 
     def deposit_item(self, char_name: str, item_id: int, quantity: int, enchant: int) -> None:
-        from apps.server.domain.exceptions import CharacterOfflineRequiredError
+        from apps.server.domain.exceptions import (
+            CharacterOfflineRequiredError,
+            CharacterServiceUnavailableError,
+        )
         from common.architecture.exceptions import ValidationDomainError
 
+        if not self._sql.has("deposit_item"):
+            raise CharacterServiceUnavailableError(
+                "Este dialeto não possui uma fila de entrega de itens verificada."
+            )
         if quantity < 1:
             raise ValidationDomainError("Quantidade inválida.")
         with self._engine_or_create().begin() as connection:
+            char_query = (
+                self._sql["delivery_character"]
+                if self._sql.has("delivery_character")
+                else self._sql["find_character_id_by_name"]
+            )
             rows = connection.execute(
-                text(self._sql["delivery_character"]), {"name": char_name}
+                text(char_query), {"name": char_name}
             ).mappings().all()
             if not rows:
                 raise GameAccountNotFoundError("Personagem não encontrado.")
-            if rows[0]["online"]:
+            if rows[0].get("online", False):
                 if not self.allows_online_delivery():
                     raise CharacterOfflineRequiredError()
-                connection.execute(text(self._sql["online_delivery_ready"]))
-            connection.execute(text(self._sql["deposit_item"]), {
+                if self._sql.has("online_delivery_ready"):
+                    connection.execute(text(self._sql["online_delivery_ready"]))
+            affected = connection.execute(text(self._sql["deposit_item"]), {
                 "name": char_name, "owner_id": int(rows[0]["char_id"]),
                 "item_id": item_id, "qty": quantity, "enchant": enchant,
-            })
+            }).rowcount
+            if affected != 1:
+                raise CharacterServiceUnavailableError(
+                    "A fila de entrega recusou o item para este dialeto."
+                )
 
     def nickname_exists(self, name: str) -> bool:
         return bool(self._fetch("nickname_exists", {"name": name}))

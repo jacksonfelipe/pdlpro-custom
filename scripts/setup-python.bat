@@ -23,6 +23,15 @@ if not exist "%VENV_PY%" (
   set "CREATED=1"
 )
 
+set "PYTHON_BITS="
+for /f %%B in ('%VENV_PY% -c "import struct; print(struct.calcsize(chr(80)) * 8)"') do set "PYTHON_BITS=%%B"
+if not defined PYTHON_BITS set "PYTHON_BITS=desconhecido"
+if not "%PYTHON_BITS%"=="64" (
+  echo Python 64-bit e obrigatorio para o PDL PRO. O ambiente atual e %PYTHON_BITS%-bit.
+  echo Instale Python 3.14 64-bit, remova backend\.venv e execute start-dev.bat novamente.
+  goto :failed
+)
+
 if "%CREATED%"=="1" (
   echo Atualizando pip no ambiente novo...
   "%VENV_PY%" -m pip install --upgrade pip

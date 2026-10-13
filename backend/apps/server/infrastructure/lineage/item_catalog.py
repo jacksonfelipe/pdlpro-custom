@@ -10,10 +10,11 @@ from pathlib import Path
 from django.conf import settings
 
 ITEM_RE = re.compile(
-    r"<(weapon|armor|etcitem)\s+id=\"(\d+)\"\s+name=\"([^\"]*)\"[^>]*>([\s\S]*?)</\1>",
+    r"<(weapon|armor|etcitem|item)\b([^>]*)>([\s\S]*?)</\1>",
     re.IGNORECASE,
 )
-SET_RE = re.compile(r"<set\s+name=\"([^\"]+)\"\s+value=\"([^\"]*)\"\s*/>")
+ATTRIBUTE_RE = re.compile(r'([\w-]+)="([^"]*)"')
+SET_RE = re.compile(r"<set\s+name=\"([^\"]+)\"\s+(?:value|val)=\"([^\"]*)\"\s*/>")
 SLOT_RE = re.compile(r"<slot\s+id=\"([^\"]+)\"\s*/>")
 RECIPE_NAME_RE = re.compile(
     r"^(?:recipe|receita|receta)\s*:\s*(.+?)(?:\s*\(\d+%\))?\s*$",
@@ -41,7 +42,7 @@ def _map_grade(crystal_type: str) -> str:
 
 
 def _classify(kind: str, item_type: str, slots: list[str]) -> str:
-    slot_set = set(slots)
+    slot_set = {slot.upper() for slot in slots}
     item_type = (item_type or "").upper()
     if kind == "etcitem":
         return "COMUM"
@@ -220,7 +221,11 @@ class LineageItemCatalog:
     def _parse(cls, xml: str) -> list[L2Item]:
         parsed: list[L2Item] = []
         for match in ITEM_RE.finditer(xml):
-            kind, raw_id, raw_name, body = match.groups()
+            kind, raw_attributes, body = match.groups()
+            attributes = {key.casefold(): value for key, value in ATTRIBUTE_RE.findall(raw_attributes)}
+            raw_id, raw_name = attributes.get("id", ""), attributes.get("name", "")
+            if not raw_id.isdigit():
+                continue
             name = _decode_xml(raw_name).strip()
             if not name or re.search(r"not in use", name, re.IGNORECASE) or re.fullmatch(r"not used", name, re.IGNORECASE):
                 continue
@@ -230,11 +235,19 @@ class LineageItemCatalog:
             slots: list[str] = []
             for slot_value in SLOT_RE.findall(body):
                 slots.extend(part.strip() for part in slot_value.split(";") if part.strip())
+            bodypart = normalized_sets.get("bodypart", "")
+            slots.extend(part.strip() for part in bodypart.split(";") if part.strip())
+            normalized_kind = kind.lower()
+            if normalized_kind == "item":
+                normalized_kind = {
+                    "weapon": "weapon",
+                    "armor": "armor",
+                }.get(attributes.get("type", "").casefold(), "etcitem")
             parsed.append(
                 L2Item(
                     id=int(raw_id),
                     name=name,
-                    category=_classify(kind.lower(), sets.get("type", ""), slots),
+                    category=_classify(normalized_kind, attributes.get("type", sets.get("type", "")), slots),
                     grade=_map_grade(sets.get("crystal_type", "NONE")),
                     icon=sets.get("icon", ""),
                     tradeable=raw_tradeable.strip().casefold() in {"true", "1", "yes"},

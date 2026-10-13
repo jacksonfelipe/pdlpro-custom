@@ -19,7 +19,7 @@ class CharacterServiceOperation(BaseModel):
     login = models.CharField(max_length=45)
     character_id = models.PositiveIntegerField()
     service = models.CharField(max_length=30)
-    value = models.CharField(max_length=16)
+    value = models.CharField(max_length=1024)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     status = models.CharField(
         max_length=12,

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/skills.xsd">
+	<skill id="22400" levels="1" name="Transformation Scroll - Zaken">
+		<!-- Transformed into Zaken. -->
+		<set name="abnormalLevel" val="1" />
+		<set name="abnormalTime" val="1800" />
+		<set name="abnormalType" val="TRANSFORM" />
+		<set name="blockedInOlympiad" val="true" />
+		<set name="effectPoint" val="1" />
+		<set name="icon" val="icon.skilltransform1" />
+		<set name="isMagic" val="2" /> <!-- Static Skill -->
+		<set name="itemConsumeCount" val="1" />
+		<set name="itemConsumeId" val="22325" /> <!-- Transformation Scroll: Zaken -->
+		<set name="magicLevel" val="-1" />
+		<set name="operateType" val="A2" />
+		<set name="targetType" val="SELF" />
+		<conditions>
+			<player canTransform="true" />
+		</conditions>
+		<effects>
+			<effect name="Transformation">
+				<param id="305" />
+			</effect>
+		</effects>
+	</skill>
+	<skill id="22401" levels="1" name="Transformation Scroll - Ranku">
+		<!-- Transformed into Ranku. -->
+		<set name="abnormalLevel" val="1" />
+		<set name="abnormalTime" val="1800" />
+		<set name="abnormalType" val="TRANSFORM" />
+		<set name="blockedInOlympiad" val="true" />
+		<set name="effectPoint" val="1" />
+		<set name="icon" val="icon.skilltransform1" />
+		<set name="isMagic" val="2" /> <!-- Static Skill -->
+		<set name="itemConsumeCount" val="1" />
+		<set name="itemConsumeId" val="22324" /> <!-- Transformation Scroll: Ranku -->
+		<set name="magicLevel" val="-1" />
+		<set name="operateType" val="A2" />
+		<set name="targetType" val="SELF" />
+		<conditions>
+			<player canTransform="true" />
+		</conditions>
+		<effects>
+			<effect name="Transformation">
+				<param id="309" />
+			</effect>
+		</effects>
+	</skill>
+	<skill id="22402" levels="1" name="Juju Agathion's Gift">
+		<set name="operateType" val="P" />
+		<set name="targetType" val="NONE" />
+	</skill>
+	<skill id="22403" levels="1" name="Extra Entrance Pass - Kamaloka (Hall of the Abyss)">
+		<set name="operateType" val="P" />
+		<set name="targetType" val="NONE" />
+	</skill>
+	<skill id="22404" levels="1" name="Pathfinder's Reward">
+		<set name="operateType" val="P" />
+		<set name="targetType" val="NONE" />
+	</skill>
+	<skill id="22405" levels="1" name="S84 Top-Grade Weapon Box">
+		<table name="#extractableItems">
+			15544,1,6.25;15545,1,6.25;15546,1,6.25;15547,1,6.25;15548,1,6.25;15549,1,6.25;15550,1,6.25;15551,1,6.25;15552,1,6.25;15553,1,6.25;15554,1,6.25;15555,1,6.25;15556,1,6.25;15557,1,6.25;16156,1,6.25;16158,1,6.25
+		</table>
+		<set name="operateType" val="A1" />
+		<set name="targetType" val="SELF" />
+		<set name="isMagic" val="2" /> <!-- Static Skill -->
+		<set name="itemConsumeCount" val="1" />
+		<set name="magicLevel" val="1" />
+		<set name="capsuled_items_skill" val="#extractableItems" />
+		<conditions msgId="129">
+			<and>
+				<player invSize="10" />
+				<player weight="80" />
+			</and>
+		</conditions>
+		<effects>
+			<effect name="RestorationRandom" />
+		</effects>
+	</skill>
+	<skill id="22406" levels="1" name="Elegia Armor Box">
+		<table name="#extractableItems">
+			15572,1,5.8824;15573,1,5.8824;15574,1,5.8824;15575,1,5.8824;15576,1,5.8824;15577,1,5.8824;15578,1,5.8824;15579,1,5.8824;15580,1,5.8824;15581,1,5.8824;15582,1,5.8824;15583,1,5.8824;15584,1,5.8824;15585,1,5.8824;15586,1,5.8824;15587,1,5.8824;15588,1,5.8816
+		</table>
+		<set name="operateType" val="A1" />
+		<set name="targetType" val="SELF" />
+		<set name="isMagic" val="2" /> <!-- Static Skill -->
+		<set name="itemConsumeCount" val="1" />
+		<set name="magicLevel" val="1" />
+		<set name="capsuled_items_skill" val="#extractableItems" />
+		<conditions msgId="129">
+			<and>
+				<player invSize="10" />
+				<player weight="80" />
+			</and>
+		</conditions>
+		<effects>
+			<effect name="RestorationRandom" />
+		</effects>
+	</skill>
+	<skill id="22407" levels="1" name="PC Cafe Energy">
+		<!-- For 60 minutes, recovers Vitality when Exp. is acquired through hunting. -->
+		<set name="operateType" val="P" />
+		<set name="targetType" val="SELF" />
+		<set name="magicLevel" val="1" />
+		<effects>
+			<effect name="Buff">
+				<sub stat="vitalityConsumeRate" val="10" />
+			</effect>
+		</effects>
+	</skill>
+	<skill id="22408" levels="1" name="Enchantment Tool Box">
+		<set name="operateType" val="P" />
+		<set name="targetType" val="NONE" />
+	</skill>
+	<skill id="22409" levels="1" name="Rune of Fate">
+		<!-- Increases acquired XP and SP by 200%. -->
+		<set name="operateType" val="P" />
+		<set name="targetType" val="SELF" />
+		<set name="magicLevel" val="1" />
+		<effects>
+			<effect name="Buff">
+				<add stat="bonusExp" val="200" />
+				<add stat="bonusSp" val="200" />
+			</effect>
+		</effects>
+	</skill>
+</list>

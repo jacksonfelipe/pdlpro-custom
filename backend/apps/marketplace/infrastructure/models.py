@@ -21,6 +21,7 @@ class CharacterListing(BaseModel):
         """
 
         FOR_SALE = "for_sale", _("À venda")
+        PENDING_DELIVERY = "pending_delivery", _("Aguardando conta de jogo")
         SOLD = "sold", _("Vendido")
         CANCELLED = "cancelled", _("Cancelado")
         DISPUTED = "disputed", _("Em disputa")
@@ -51,7 +52,7 @@ class CharacterListing(BaseModel):
     bag_items = models.JSONField(_("Itens da bag e warehouse"), default=list, blank=True)
     skills = models.JSONField(_("Skills do personagem"), default=list, blank=True)
     old_account = models.CharField(max_length=45, blank=True, default="")
-    new_account = models.CharField(max_length=45, blank=True)
+    new_account = models.CharField(max_length=45, blank=True, default="")
     price = models.DecimalField(max_digits=12, decimal_places=2)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.FOR_SALE)
     notes = models.TextField(blank=True)

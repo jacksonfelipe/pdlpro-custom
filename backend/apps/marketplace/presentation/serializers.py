@@ -14,3 +14,9 @@ class CreateListingSerializer(serializers.Serializer):
     char_id = serializers.IntegerField(min_value=1)
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
     notes = serializers.CharField(required=False, allow_blank=True, default="")
+
+
+class PurchaseListingSerializer(serializers.Serializer):
+    """Valida a conta vinculada escolhida para receber o personagem comprado."""
+
+    destination_login = serializers.CharField(max_length=45, required=False, allow_blank=True, default="")

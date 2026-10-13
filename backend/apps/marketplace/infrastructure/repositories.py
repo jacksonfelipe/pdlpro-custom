@@ -80,6 +80,14 @@ class DjangoCharacterListingRepository(ICharacterListingRepository):
         rows = CharacterListing.objects.select_related("seller", "buyer").filter(seller__id=user_id)
         return [self._entity(row) for row in rows]
 
+    def list_pending_delivery(self, buyer_id: UUID) -> list[CharacterListingEntity]:
+        rows = (
+            CharacterListing.objects.select_related("seller", "buyer")
+            .filter(buyer__id=buyer_id, status=CharacterListing.Status.PENDING_DELIVERY)
+            .order_by("created_at")
+        )
+        return [self._entity(row) for row in rows]
+
     def find_active_by_char(self, char_id: int) -> CharacterListingEntity | None:
         row = (
             CharacterListing.objects.select_related("seller", "buyer")
@@ -145,6 +153,32 @@ class DjangoCharacterListingRepository(ICharacterListingRepository):
             sold_at=timezone.now(),
         )
         return self._entity(row)
+
+    def mark_pending_delivery(self, listing_id: UUID, buyer_id: UUID) -> CharacterListingEntity:
+        from django.contrib.auth import get_user_model
+
+        buyer = get_user_model().objects.get(id=buyer_id)
+        row = self._claim_for_sale(
+            listing_id,
+            buyer=buyer,
+            new_account="",
+            status=CharacterListing.Status.PENDING_DELIVERY,
+            sold_at=timezone.now(),
+        )
+        return self._entity(row)
+
+    def mark_delivered(self, listing_id: UUID, new_account: str) -> CharacterListingEntity:
+        fields = {
+            "updated_at": timezone.now(),
+            "new_account": new_account,
+            "status": CharacterListing.Status.SOLD,
+        }
+        updated = CharacterListing.objects.filter(
+            id=listing_id, status=CharacterListing.Status.PENDING_DELIVERY
+        ).update(**fields)
+        if not updated:
+            raise ListingNotForSaleError()
+        return self._queryset().get(id=listing_id)
 
     def mark_cancelled(self, listing_id: UUID) -> CharacterListingEntity:
         row = self._claim_for_sale(listing_id, status=CharacterListing.Status.CANCELLED)

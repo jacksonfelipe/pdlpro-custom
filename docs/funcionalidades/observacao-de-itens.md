@@ -34,7 +34,9 @@ Customs cadastrados no painel usam a imagem enviada para media, sem rebuild do f
 ## Capturas, permissões e persistência
 
 As consultas são SELECTs executados em uma transação MySQL somente leitura.
-Os módulos `dreamv3`, `lucerav2` e `mobius` possuem SQL específico para seus schemas.
+Os módulos `l2jpremium`, `l2journey`, `dreamv3`, `lucerav2` e `mobius` possuem
+SQL específico para seus schemas. O `l2jpremium` é o padrão do sistema; use
+outro módulo apenas quando o schema configurado for diferente.
 O recorte inclui INVENTORY, WAREHOUSE e PAPERDOLL de personagens com accesslevel=0,
 além de CLANWH com dono válido em clan_data. Pets, correio, itens de GM e itens
 órfãos não fazem parte desse recorte. O inventário do painel aparece separado como SITE.

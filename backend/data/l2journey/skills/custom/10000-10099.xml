@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/skills.xsd">
+	<skill id="10000" levels="1" name="Mana Drug">
+		<set name="icon" val="icon.etc_potion_blue_i00" />
+		<set name="operateType" val="A2" />
+		<set name="targetType" val="SELF" />
+		<set name="abnormalLevel" val="2" />
+		<set name="abnormalTime" val="15" />
+		<set name="abnormalType" val="MP_RECOVER" />
+		<set name="isMagic" val="2" /> <!-- Static Skill -->
+		<set name="itemConsumeCount" val="1" />
+		<set name="itemConsumeId" val="726" />
+		<set name="magicLevel" val="1" />
+		<set name="reuseDelay" val="10000" />
+		<effects>
+			<effect name="ManaHealOverTime" ticks="3">
+				<param power="24" />
+			</effect>
+		</effects>
+	</skill>
+	<skill id="10001" levels="1" name="Mana Potion">
+		<set name="icon" val="icon.etc_reagent_blue_i00" />
+		<set name="operateType" val="A2" />
+		<set name="targetType" val="SELF" />
+		<set name="abnormalLevel" val="3" />
+		<set name="abnormalTime" val="15" />
+		<!-- set name="displayId" val="2288" / -->
+		<set name="abnormalType" val="MP_RECOVER" />
+		<set name="isMagic" val="2" /> <!-- Static Skill -->
+		<set name="itemConsumeCount" val="1" />
+		<set name="itemConsumeId" val="728" />
+		<set name="magicLevel" val="1" />
+		<set name="reuseDelay" val="10000" />
+		<effects>
+			<effect name="ManaHealOverTime" ticks="3">
+				<param power="50" />
+			</effect>
+		</effects>
+	</skill>
+	<skill id="10002" levels="1" name="Custom Trap skill">
+		<!-- Use this skill if you want to handle trap activation in scripts(example Seed of Destruction Spawn Traps) -->
+		<set name="operateType" val="P" />
+		<set name="targetType" val="AURA" />
+		<set name="isMagic" val="1" /> <!-- Magic Skill -->
+	</skill>
+</list>

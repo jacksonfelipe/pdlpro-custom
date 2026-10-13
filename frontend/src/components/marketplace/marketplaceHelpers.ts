@@ -5,6 +5,7 @@ export type MarketplaceTranslate = (key: string, options?: Record<string, unknow
 
 const listingStatusClasses: Record<string, string> = {
   for_sale: 'for-sale',
+  pending_delivery: 'pending-delivery',
   sold: 'sold',
   cancelled: 'cancelled',
   disputed: 'disputed',

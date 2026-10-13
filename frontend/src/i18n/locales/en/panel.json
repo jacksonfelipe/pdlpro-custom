@@ -448,6 +448,7 @@
     "authRequired": "Sign in to sell or buy characters.",
     "status": {
       "for_sale": "For sale",
+      "pending_delivery": "Waiting for game account",
       "sold": "Sold",
       "cancelled": "Cancelled",
       "disputed": "Disputed"
@@ -512,6 +513,11 @@
       "cancelListing": "Cancel listing",
       "processing": "Processing...",
       "buy": "Buy character",
+      "deliveryAccount": "Account that will receive the character",
+      "deliveryAuto": "Automatically choose an account with space",
+      "deliveryOption": "{{login}} · {{count}}/7 characters",
+      "deliveryPendingAccount": "The purchase will stay protected in custody until you link an L2 account.",
+      "deliveryFull": "Every linked account has reached 7 characters. Link or create an account with space before buying.",
       "ownerNote": "This is the same view presented to the buyer.",
       "titleEyebrow": "Title",
       "noTitle": "No title",
@@ -528,6 +534,7 @@
       "listed": "Character listed",
       "listFailed": "Could not create the listing",
       "bought": "Purchase complete",
+      "awaitingAccount": "Purchase complete. Link an L2 account to receive the character.",
       "buyFailed": "Could not buy",
       "cancelled": "Sale cancelled",
       "cancelFailed": "Could not cancel"
@@ -2038,6 +2045,24 @@
         "submit": "Clear PK",
         "submitting": "Clearing..."
       },
+      "classChange": {
+        "title": "Change base class",
+        "hint": "Same race: {{sameRace}}. Different race: {{crossRace}}.",
+        "target": "New base class",
+        "placeholder": "Select the new class",
+        "subclasses": "Subclass destination",
+        "reserve": "Reserve to recover when returning ({{price}})",
+        "keep": "Keep subclasses ({{price}})",
+        "delete": "Delete subclasses without a reserve",
+        "enchantsTitle": "Move enchanted skills",
+        "enchantsHint": "Enter the ID of the new-class skill that will receive each enchant. Leave blank to not move it.",
+        "enchantTarget": "{{name}} +{{enchant}} → new skill ID",
+        "skillIdPlaceholder": "Do not move this skill",
+        "targetSkillOption": "{{name}} · Lv. {{level}}",
+        "warning": "The character will be disconnected and locked during this operation. Journey validates the class, skills and limits before completing it.",
+        "submit": "Change class",
+        "submitting": "Changing class..."
+      },
       "shortcuts": {
         "title": "Shortcuts",
         "hint": "Same destinations as the legacy panel.",
@@ -2080,7 +2105,9 @@
       "karmaDone": "Karma cleared",
       "karmaError": "Could not clear karma",
       "pkDone": "PK cleared",
-      "pkError": "Could not clear PK"
+      "pkError": "Could not clear PK",
+      "classChanged": "Class changed successfully",
+      "classError": "Could not change the class"
     }
   },
   "programs": {

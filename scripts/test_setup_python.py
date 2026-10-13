@@ -12,6 +12,31 @@ import unittest
 
 
 class SetupPythonTests(unittest.TestCase):
+    def test_reports_an_actionable_error_for_a_non_64_bit_virtualenv(self):
+        with tempfile.TemporaryDirectory(prefix='PDL setup architecture test ') as directory:
+            root = Path(directory)
+            (root / 'scripts').mkdir()
+            (root / 'backend' / '.venv' / 'Scripts').mkdir(parents=True)
+            (root / 'backend' / 'requirements.txt').write_text('example==1.0\n')
+            script = root / 'scripts' / 'setup-python.bat'
+            shutil.copyfile(Path(__file__).with_name('setup-python.bat'), script)
+            shutil.copyfile(Path(__file__).with_name('file_stamp.py'), root / 'scripts' / 'file_stamp.py')
+
+            # An executable that cannot report a Python word size represents an
+            # unusable virtualenv. The batch guard must stop before running pip.
+            shutil.copyfile(Path(os.environ['COMSPEC']), root / 'backend/.venv/Scripts/python.exe')
+            result = subprocess.run(
+                [os.environ.get('COMSPEC', 'cmd.exe'), '/d', '/c', str(script)],
+                cwd=root.parent,
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('Python 64-bit e obrigatorio', result.stdout)
+            self.assertIn('remova backend\\.venv', result.stdout)
+
     def test_skips_pip_when_requirements_are_unchanged(self):
         with tempfile.TemporaryDirectory(prefix='PDL setup test ') as directory:
             root = Path(directory)

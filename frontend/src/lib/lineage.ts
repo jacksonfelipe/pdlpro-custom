@@ -1,7 +1,7 @@
 import i18n from '../i18n'
 import { formatCoins } from './formatters'
 
-const classNames: Record<number, string> = {
+export const classNames: Record<number, string> = {
   0: 'Human Fighter',
   1: 'Human Warrior',
   2: 'Gladiator',

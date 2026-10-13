@@ -7,6 +7,10 @@ from apps.server.infrastructure.lineage.catalog import (
 )
 
 
+def test_l2jpremium_is_the_default_lineage_query_module(settings):
+    assert settings.LINEAGE_QUERY_MODULE == "l2jpremium"
+
+
 def test_lucerav2_catalog_loads_required_queries():
     catalog = LineageQueryCatalog.load("lucerav2")
     assert catalog.dialect == "lucerav2"
@@ -85,7 +89,7 @@ def test_loads_full_dialect_from_extension_root(tmp_path):
     catalog = LineageQueryCatalog.load("acme_l2j", extra_roots=[tmp_path])
     assert catalog.dialect == "acme_l2j"
     assert "acme" in catalog["top_pvp"]
-    assert catalog.has("deposit_item")
+    assert catalog.has("update_item_amount")
 
 
 def test_extension_overlay_replaces_named_query_and_keeps_core(tmp_path):

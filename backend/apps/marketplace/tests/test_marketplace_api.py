@@ -91,3 +91,38 @@ def test_list_and_buy_character(api, seller, buyer):
     assert gateway.get_character("buyer", char.char_id) is not None
     wallet = api.get("/api/v1/shared/wallet/")
     assert wallet.data["balance"] == "15.00"
+
+
+@pytest.mark.django_db
+def test_purchase_without_game_account_is_delivered_after_account_registration(api, seller, buyer):
+    """A compra quitada fica bloqueada em custódia até o vínculo de jogo confirmar."""
+
+    api.force_authenticate(user=seller)
+    assert api.post("/api/v1/customer/server/accounts/register/", {"password": "l2pass123"}, format="json").status_code == 200
+    gateway = DependencyInjection.root().resolve(ILineageGateway)
+    char = gateway.seed_character("seller", "AwaitingBuyer")
+    listed = api.post(
+        "/api/v1/customer/marketplace/",
+        {"char_id": char.char_id, "price": "25.00"},
+        format="json",
+    )
+    assert listed.status_code == 200, listed.data
+
+    api.force_authenticate(user=buyer)
+    order = api.post("/api/v1/customer/payments/", {"amount": "40.00", "method": "mock"}, format="json")
+    confirm_mock_payment(order.data["id"])
+    bought = api.post(f"/api/v1/customer/marketplace/{listed.data['id']}/buy/", format="json")
+    assert bought.status_code == 200, bought.data
+    assert bought.data["status"] == "pending_delivery"
+    assert bought.data["new_account"] == ""
+    assert gateway.get_character("buyer", char.char_id) is None
+    assert gateway.get_character("MARKETPLACE_SYSTEM", char.char_id) is not None
+
+    linked = api.post("/api/v1/customer/server/accounts/register/", {"password": "l2pass123"}, format="json")
+    assert linked.status_code == 200, linked.data
+    assert gateway.get_character("buyer", char.char_id) is not None
+    from apps.marketplace.infrastructure.models import CharacterListing
+
+    row = CharacterListing.objects.get(id=listed.data["id"])
+    assert row.status == CharacterListing.Status.SOLD
+    assert row.new_account == "buyer"

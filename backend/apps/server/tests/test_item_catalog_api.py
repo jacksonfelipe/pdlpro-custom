@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 from apps.games.infrastructure.models import Prize
 from apps.server.infrastructure.item_catalog_adapter import LineageItemCatalogAdapter
 from apps.server.infrastructure.lineage.item_catalog import (
+    LineageItemCatalog,
     get_item_catalog,
     item_metadata,
 )
@@ -28,6 +29,24 @@ def custom_catalog(tmp_path, settings):
     get_item_catalog.cache_clear()
     yield
     get_item_catalog.cache_clear()
+
+
+def test_catalog_parses_journey_item_elements_and_val_sets(tmp_path):
+    (tmp_path / "journey-items.xml").write_text(
+        '''<list><item id="1" type="Weapon" name="Journey Sword">
+        <set name="icon" val="icon.weapon_small_sword_i00" />
+        <set name="crystal_type" val="D" /><set name="bodypart" val="rhand" />
+        </item><item id="2" type="Armor" name="Journey Armor">
+        <set name="bodypart" val="chest" /></item></list>''',
+        encoding="utf-8",
+    )
+
+    catalog = LineageItemCatalog.load(tmp_path)
+
+    sword, armor = catalog.get(1), catalog.get(2)
+    assert sword is not None and sword.category == "WEAPON" and sword.grade == "D"
+    assert sword.icon == "icon.weapon_small_sword_i00"
+    assert armor is not None and armor.category == "ARMOR"
 
 
 @pytest.mark.django_db

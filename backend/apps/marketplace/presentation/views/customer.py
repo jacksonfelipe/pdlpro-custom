@@ -17,7 +17,10 @@ from apps.marketplace.application.use_cases import (
     PurchaseListingUseCase,
 )
 from apps.marketplace.domain.entities import CharacterListingEntity
-from apps.marketplace.presentation.serializers import CreateListingSerializer
+from apps.marketplace.presentation.serializers import (
+    CreateListingSerializer,
+    PurchaseListingSerializer,
+)
 from apps.server.domain.skill_catalog import ISkillCatalog
 from apps.server.presentation.item_metadata import ItemCatalogAPIView
 from apps.server.presentation.skill_metadata import dump_learned_skill
@@ -120,11 +123,14 @@ class PurchaseListingView(ItemCatalogAPIView):
         description=gettext_lazy("Compra o anúncio de personagem informado em nome do usuário autenticado."),
     )
     def post(self, request, listing_id):
+        serializer = PurchaseListingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         listing = self.resolve(PurchaseListingUseCase).execute(
             PurchaseListingInput(
                 buyer_id=request.user.id,
                 buyer_username=request.user.username,
                 listing_id=listing_id,
+                destination_login=serializer.validated_data["destination_login"],
             )
         )
         return Response(dump_listing(listing, self.resolve(ISkillCatalog)))

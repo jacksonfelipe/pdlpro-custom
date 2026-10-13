@@ -1,7 +1,9 @@
 from django.urls import path
 
 from apps.server.presentation.views.customer import (
+    BaseClassSkillsView,
     ChangeAppearanceView,
+    ChangeBaseClassView,
     ChangeNicknameView,
     ChangeSexView,
     CharacterDetailView,
@@ -39,9 +41,11 @@ urlpatterns = [
     path("characters/", CharactersView.as_view(), name="customer-characters"),
     path("characters/create/", CreateCharacterView.as_view(), name="customer-create-character"),
     path("characters/<int:char_id>/skills/", CharacterSkillsView.as_view(), name="customer-character-skills"),
+    path("characters/<int:char_id>/class-skills/", BaseClassSkillsView.as_view(), name="customer-class-skills"),
     path("characters/<int:char_id>/", CharacterDetailView.as_view(), name="customer-character-detail"),
     path("characters/nickname/", ChangeNicknameView.as_view(), name="customer-nickname"),
     path("characters/sex/", ChangeSexView.as_view(), name="customer-sex"),
+    path("characters/class/", ChangeBaseClassView.as_view(), name="customer-class-change"),
     path("characters/unstuck/", UnstuckView.as_view(), name="customer-unstuck"),
     path("characters/teleport/", TeleportView.as_view(), name="customer-teleport"),
     path("characters/appearance/", ChangeAppearanceView.as_view(), name="customer-appearance"),

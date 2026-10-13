@@ -9,8 +9,11 @@ export const marketplaceApi = {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
-  buy: (listingId: string) =>
-    request<ApiCharacterListing>(`/customer/marketplace/${listingId}/buy/`, { method: 'POST' }),
+  buy: (listingId: string, destination_login?: string) =>
+    request<ApiCharacterListing>(`/customer/marketplace/${listingId}/buy/`, {
+      method: 'POST',
+      ...(destination_login ? { body: JSON.stringify({ destination_login }) } : {}),
+    }),
   cancel: (listingId: string) =>
     request<ApiCharacterListing>(`/customer/marketplace/${listingId}/cancel/`, { method: 'POST' }),
 }

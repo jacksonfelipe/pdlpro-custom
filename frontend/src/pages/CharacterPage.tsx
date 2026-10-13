@@ -21,6 +21,7 @@ import {
   ShieldOff,
   Skull,
   Store,
+  WandSparkles,
   Undo2,
   UsersRound,
   VenusAndMars,
@@ -81,6 +82,9 @@ export function CharacterPage() {
   const [hairStyle, setHairStyle] = useState(0)
   const [hairColor, setHairColor] = useState(0)
   const [face, setFace] = useState(0)
+  const [targetClassId, setTargetClassId] = useState('')
+  const [subclassDisposition, setSubclassDisposition] = useState<'keep' | 'delete' | 'reserve'>('reserve')
+  const [transferTargets, setTransferTargets] = useState<Record<number, string>>({})
   const [submitting, setSubmitting] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<CharacterItemDetail | null>(null)
   const action = useAsyncAction()
@@ -99,6 +103,13 @@ export function CharacterPage() {
   const hairMax = char?.sex === 1 ? appearance?.hair_style_max_female ?? 6 : appearance?.hair_style_max_male ?? 4
   const colorMax = appearance?.hair_color_max ?? 3
   const faceMax = appearance?.face_max ?? 2
+  const classChoices = prices.data?.catalog?.class_change?.class_ids ?? []
+  const enchantedSkills = (skills.data ?? []).filter((skill) => skill.class_index === 0 && skill.enchant > 0)
+  const targetSkills = useQuery({
+    queryKey: ['base-class-skills', login, id, targetClassId],
+    queryFn: () => lineageApi.baseClassSkills(id, Number(targetClassId), login),
+    enabled: Boolean(login) && Number.isInteger(Number(targetClassId)) && Number(targetClassId) >= 0,
+  })
 
   async function refreshCharacter() {
     await queryClient.invalidateQueries({ queryKey: ['characters', login] })
@@ -191,6 +202,37 @@ export function CharacterPage() {
       } finally { setSubmitting(null) }
     })
     if (!result.ok && !result.skipped) toast.error(apiErrorMessage(result.error, t(`character.toast.${kind}Error`)))
+  }
+
+  async function onChangeBaseClass(event: FormEvent) {
+    event.preventDefault()
+    const target = Number(targetClassId)
+    if (!Number.isInteger(target) || target < 0) return
+    const transfers = enchantedSkills.flatMap((skill) => {
+      const targetSkill = Number(transferTargets[skill.skill_id])
+      return Number.isInteger(targetSkill) && targetSkill > 0
+        ? [{ source_skill_id: skill.skill_id, target_skill_id: targetSkill, source_enchant: skill.enchant }]
+        : []
+    })
+    const result = await action.run(async () => {
+      setSubmitting('class')
+      try {
+        await lineageApi.changeBaseClass({
+          login,
+          char_id: id,
+          target_class_id: target,
+          subclass_disposition: subclassDisposition,
+          transfers,
+          request_key: requestKey('class', JSON.stringify([target, subclassDisposition, transfers])),
+        })
+        operation.current = null
+        toast.success(t('character.toast.classChanged'))
+        await refreshCharacter()
+        await queryClient.invalidateQueries({ queryKey: ['character-skills', login, id] })
+        await queryClient.invalidateQueries({ queryKey: ['wallet'] })
+      } finally { setSubmitting(null) }
+    })
+    if (!result.ok && !result.skipped) toast.error(apiErrorMessage(result.error, t('character.toast.classError')))
   }
 
   return (
@@ -367,6 +409,8 @@ export function CharacterPage() {
             ) : null}
           </Card>
 
+          <ExtensionSlotOutlet slot="character.aside" />
+
           <div className="grid cols-2 character-services">
             <Card>
               <div className="account-form-title">
@@ -393,6 +437,69 @@ export function CharacterPage() {
                 </Button>
               </form></MicroResource>
             </Card>
+
+            {serviceAvailable(prices.data, 'CHANGE_BASE_CLASS') ? (
+              <Card>
+                <div className="account-form-title">
+                  <WandSparkles aria-hidden="true" />
+                  <div>
+                    <h3>{t('character.services.classChange.title')}</h3>
+                    <p>{t('character.services.classChange.hint', {
+                      sameRace: formatServicePrice(prices.data?.CLASS_CHANGE_SAME_RACE),
+                      crossRace: formatServicePrice(prices.data?.CLASS_CHANGE_CROSS_RACE),
+                    })}</p>
+                  </div>
+                </div>
+                <form className="account-action-form" onSubmit={onChangeBaseClass}>
+                  <Field>
+                    {t('character.services.classChange.target')}
+                    <select value={targetClassId} onChange={(event) => setTargetClassId(event.target.value)} required disabled={submitting !== null}>
+                      <option value="">{t('character.services.classChange.placeholder')}</option>
+                      {classChoices.filter((classId) => classId !== char.class_id).map((classId) => (
+                        <option key={classId} value={classId}>{getClassName(classId)}</option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field>
+                    {t('character.services.classChange.subclasses')}
+                    <select value={subclassDisposition} onChange={(event) => setSubclassDisposition(event.target.value as 'keep' | 'delete' | 'reserve')} disabled={submitting !== null}>
+                      <option value="reserve">{t('character.services.classChange.reserve', { price: formatServicePrice(prices.data?.SUBCLASS_RESERVE) })}</option>
+                      <option value="keep">{t('character.services.classChange.keep', { price: formatServicePrice(prices.data?.SUBCLASS_KEEP) })}</option>
+                      <option value="delete">{t('character.services.classChange.delete')}</option>
+                    </select>
+                  </Field>
+                  {enchantedSkills.length > 0 ? (
+                    <div className="account-form-title">
+                      <div>
+                        <h4>{t('character.services.classChange.enchantsTitle')}</h4>
+                        <p>{t('character.services.classChange.enchantsHint')}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {enchantedSkills.map((skill) => (
+                    <Field key={skill.skill_id}>
+                      {t('character.services.classChange.enchantTarget', { name: skill.name, enchant: skill.enchant })}
+                      <select
+                        value={transferTargets[skill.skill_id] ?? ''}
+                        onChange={(event) => setTransferTargets((current) => ({ ...current, [skill.skill_id]: event.target.value }))}
+                        disabled={submitting !== null || targetSkills.isLoading || targetSkills.isError}
+                      >
+                        <option value="">{t('character.services.classChange.skillIdPlaceholder')}</option>
+                        {(targetSkills.data ?? []).map((targetSkill) => (
+                          <option key={targetSkill.skill_id} value={targetSkill.skill_id}>
+                            {t('character.services.classChange.targetSkillOption', { name: targetSkill.name, level: targetSkill.level })}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  ))}
+                  <p className="muted">{t('character.services.classChange.warning')}</p>
+                  <Button type="submit" disabled={!targetClassId || submitting !== null}>
+                    {submitting === 'class' ? t('character.services.classChange.submitting') : t('character.services.classChange.submit')}
+                  </Button>
+                </form>
+              </Card>
+            ) : null}
 
             <Card>
               <div className="account-form-title">
@@ -557,7 +664,6 @@ export function CharacterPage() {
           </div>
         </div>
       ) : null}
-      {char ? <ExtensionSlotOutlet slot="character.aside" /> : null}
       <CharacterItemDetailModal item={selectedItem} onClose={() => setSelectedItem(null)} />
     </div>
   )

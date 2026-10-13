@@ -4,7 +4,7 @@ Os retratos ilustrativos do painel e suas variações por classe/sexo estão des
 
 [← Índice](../README.md) · [Fonte única](../projeto/fonte-unica.md) · [Tutorial do operador](../tutoriais/lineage-game.md) · [Configurador admin](../operacao/integracoes-admin.md)
 
-> **Atualizado:** 25 de setembro de 2026
+> **Atualizado:** 27 de setembro de 2026
 
 [Configurador admin](../operacao/integracoes-admin.md)
 
@@ -16,6 +16,12 @@ Módulos disponíveis no core:
 - `lucerav2`
 - `dreamv3`
 - `mobius`
+- `l2jpremium`
+- `l2journey`
+
+O padrão, quando `LINEAGE_QUERY_MODULE` não está definido, é `l2jpremium`.
+Defina explicitamente outro módulo no `.env` apenas se o schema do gameserver
+for diferente.
 
 Forks de cliente **não** precisam de um módulo novo no core. Coloque o SQL em
 `backend/extensions/<cliente>/infrastructure/lineage/queries/<dialeto>/` e
@@ -29,8 +35,22 @@ Configure o módulo em `.env`:
 
 ```env
 LINEAGE_DB_ENABLED=true
-LINEAGE_QUERY_MODULE=lucerav2
+LINEAGE_QUERY_MODULE=l2jpremium
 ```
+
+Use `l2jpremium` somente com o schema do dump `l2jpremiumgve`: ele usa
+`characters.charId`, os campos `loc`/`count` de `items` e a fila
+`web_item_delivery` do gameserver. A fila não representa enchant; por isso o
+PDL aceita nela apenas itens com enchant zero, sem degradar silenciosamente o
+item solicitado.
+
+Use `l2journey` somente com o schema `l2journey`. Ele cobre consultas,
+inventário, rankings, mundo, lojas offline e moderação. A fonte inspecionada
+não contém um consumidor verificável para `character_premium_items` nem
+`custom_mail`; logo, entrega do inventário, criação de personagem e câmbio de
+moedas ficam indisponíveis nesse dialeto até existir um contrato transacional
+do gameserver. O painel falha fechado para essas operações e não cria tabelas,
+não inventa IDs de item e não altera o banco do jogo.
 
 O transporte até o MySQL é escolhido no `.env`: `LINEAGE_DB_SSL=false` mantém o TCP
 atual (sem TLS); `LINEAGE_DB_SSL=true` cifra o canal. O guia com certificados, volume
@@ -124,6 +144,47 @@ Consulte também [as variáveis de conexão](../configuracao/ambiente.md), [TLS 
 Nome igual ao login não concede acesso: a conta deve possuir vínculo confirmado no gateway. Nickname, sexo, teleporte, visual, karma e PK reservam saldo antes da chamada externa e aceitam `request_key` para repetição segura. O personagem precisa estar **offline**. UNSTUCK continua gratuito e fixo em Giran; TELEPORT reutiliza o mesmo UPDATE com as coordenadas da vila do catálogo Interlude. APPEARANCE, CLEAR_KARMA, CLEAR_PK e a vitrine de lojas dependem de consultas opcionais no dialeto (`change_appearance`, `clear_karma`, `clear_pk`, `list_private_stores`); se o catálogo não as tiver, o serviço some da ficha e `/stores` informa indisponibilidade. Resultados incertos exigem [conciliação de serviços](../operacao/seguranca.md#serviços-pagos-do-personagem).
 
 A caça do dia só lê o personagem (`pvp`, `pk`, `online_time`, `level`). A vitrine lê as lojas offline quando o dialeto publica essas consultas, devolve sexo/classe para o retrato da raça e as coordenadas XYZ da loja, e o gateway memoriza a lista por 30 segundos. Se as tabelas não existirem no schema, `/stores` responde `available: false` (200) em vez de 500.
+
+## Edição de classe, skills e subclasses
+
+A alteração de classe não pode ser feita por um `UPDATE characters` pelo PDL. Ela exige uma ponte instalada no gameserver, pois o servidor é responsável por desconectar o personagem, bloquear a seleção durante a operação, trocar a classe, reconstruir as skills válidas e confirmar o resultado. O painel só pode debitar a carteira e concluir a operação depois dessa confirmação.
+
+O pedido de troca registra explicitamente um dos destinos para subclasses: **manter** (serviço pago), **apagar** ou **reservar**. Reserva mantém uma cópia das subclasses e suas skills para recuperação paga, somente quando o personagem voltar à classe-base compatível. A ação não reutiliza `ban`, `accessLevel` ou bloqueios de transferência existentes.
+
+O jogador pode transferir enchant de skills somente de forma um-para-um: cada skill antiga financia uma única skill válida da nova classe, com o mesmo valor `+N` e nunca acima do que a skill antiga possuía. O bridge do gameserver valida a árvore e o limite de enchant da distribuição; o backend valida repetição, propriedade, saldo e limite das skills de origem.
+
+### Ponte L2Journey e recuperação de schema
+
+O Journey abre uma porta exclusivamente local (`127.0.0.1:15433`) quando
+`PDL_BRIDGE_SECRET` está definido. O PDL usa o mesmo valor em
+`LINEAGE_JOURNEY_BRIDGE_SECRET`; a chave nunca é enviada ao navegador. O
+protocolo assina cada chamada com HMAC-SHA256, timestamp e nonce. Além de
+`PING`, `LOCK`, `UNLOCK` e `KICK`, a versão Journey aceita
+`TRANSFER:<origem>:<destino>` exclusivamente para um personagem que já esteja
+bloqueado. A operação é executada pelo GameServer em transação, confirma a
+conta de origem e mantém o lock até o PDL confirmar a venda ou o cancelamento.
+
+No Marketplace de personagens, publicar o anúncio bloqueia e desconecta o
+personagem antes de movê-lo para a conta de custódia. Enquanto o anúncio está
+ativo, a seleção no jogo é recusada e os registros de inventário, equipamento
+e warehouse pessoal ligados ao `charId` seguem com o personagem, sem acesso do
+vendedor. A compra ou o cancelamento transfere o personagem ainda bloqueado e
+só então o libera. Recursos que pertençam à conta ou ao clã, e não ao `charId`,
+não fazem parte da venda.
+
+Na inicialização, e novamente se uma consulta detectar que ela desapareceu, o
+GameServer aplica de forma idempotente a tabela
+`pdl_character_edit_locks`. Isso recupera **a migração já presente no JAR** sem
+reiniciar o processo. Uma tabela ou regra inteiramente nova ainda exige uma
+versão nova do core, compilada e implantada: o site não cria schema arbitrário
+no banco do jogo.
+
+A equipe pode conferir o enlace, sem alterar personagens, em
+`GET /api/v1/staff/server/journey-bridge/`. A resposta positiva é
+`{"configured": true, "connected": true}`; falhas de segredo, porta ou core
+resultam em erro de serviço e ficam registradas pelos logs normais da API. Para
+o primeiro uso do bridge, inicie o GameServer em uma nova janela (ou faça um
+restart controlado) depois de configurar a variável.
 
 ## Moderação da equipe
 

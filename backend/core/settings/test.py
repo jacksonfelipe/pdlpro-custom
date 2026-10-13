@@ -14,6 +14,11 @@ SECRET_KEY = "django-insecure-test-key-with-more-than-thirty-two-characters-for-
 PDL_DATA_ENCRYPTION_KEY = "MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA="
 DEBUG = False
 LINEAGE_DB_ENABLED = False
+# A configuração real da instalação não pode trocar o dialeto validado pela suíte.
+LINEAGE_QUERY_MODULE = "l2jpremium"
+# Nem os XMLs de uma instalação Journey podem alterar o catálogo de regressão Premium.
+LINEAGE_ITEM_XML_DIR = str(BASE_DIR / "data" / "items")
+LINEAGE_SKILL_XML_DIR = str(BASE_DIR / "data" / "skills")
 
 DATABASES = {
     "default": {

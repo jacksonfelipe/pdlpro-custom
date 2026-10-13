@@ -250,6 +250,31 @@ Lançamento da versão 2.6.2 do PDL PRO com o configurador de bônus de recarga 
 
 ### Adicionado
 
+- **Diagnóstico autenticado PDL ↔ L2Journey**: endpoint exclusivo da equipe
+  verifica por `PING` HMAC a ponte local do GameServer, sem expor a chave nem
+  editar personagens. A fonte Journey cria/recria de modo idempotente a tabela
+  de locks conhecida, inclusive quando ela é detectada como ausente durante a
+  execução.
+
+- **Contrato de edição de personagem**: política de domínio para preservar,
+  remover ou reservar subclasses durante troca de classe e para transferir
+  enchant de skills um-para-um, sem permitir duplicação nem aumento do nível.
+  A aplicação efetiva permanece condicionada à ponte nativa do gameserver.
+
+- **Custódia segura de personagens no Marketplace Journey**: publicar um
+  personagem agora o desconecta, bloqueia a seleção e o move para a conta de
+  custódia pelo GameServer. Compra e cancelamento validam a origem, transferem
+  com o lock ainda ativo e só liberam a seleção após a transação do painel.
+
+- **Dialetos Lineage L2J Premium e L2Journey**:
+  - Catálogos SQL `l2jpremium` e `l2journey` para os schemas inspecionados,
+    cobrindo contas, personagens, inventário, rankings, mundo, lojas offline,
+    moderação e observação de itens.
+  - Entrega de itens no Premium usa exclusivamente a fila nativa
+    `web_item_delivery`; o Journey mantém entrega, criação de personagem e
+    câmbio bloqueados até que o gameserver forneça uma fila transacional
+    verificável.
+
 - **Campo Interativo de Imagem / Flyer para Banners Administrativos**:
   - Transformação do campo de texto de imagem em `/panel/admin/banners` (`AdminBannersPage`) em componente interativo completo com alternância entre upload local do dispositivo e URL externa.
   - Área de dropzone com suporte a arrastar e soltar (drag & drop), validação de tamanho (máximo 10MB) e formatos compatíveis (PNG, JPG, JPEG, WEBP, GIF, SVG).
@@ -275,6 +300,9 @@ Lançamento da versão 2.6.2 do PDL PRO com o configurador de bônus de recarga 
 
 - **Abas do painel preservadas na URL**: a aba ativa passa a ficar em `?tab=` (e sub-abas em parâmetro próprio, como `?pass=` no passe de batalha), sobrevivendo ao recarregamento e a links compartilhados em Carteira administrativa, Integrações, Configurador da loja, Pacotes e cupons, Observação de itens, Inventário, Loja e Passe de batalha. O hook compartilhado `useSearchParamTab` centraliza o comportamento, também adotado pelo Salão de jogos.
 - Os testes de interface do frontend aguardam até 5 s por renderizações assíncronas (`asyncUtilTimeout`), eliminando falhas intermitentes sob instrumentação de cobertura e em runners de CI.
+- **Integração Lineage padrão**: o PDL PRO passa a selecionar o dialeto
+  `l2jpremium` quando `LINEAGE_QUERY_MODULE` não é informado. Outros dialetos
+  continuam disponíveis por configuração explícita no `.env`.
 
 ### Corrigido
 
@@ -284,6 +312,10 @@ Lançamento da versão 2.6.2 do PDL PRO com o configurador de bônus de recarga 
   - Remover o flyer de um banner conclui a limpeza mesmo quando o storage falha ao apagar o arquivo, sem mascarar outros erros.
   - `PUT /api/v1/staff/bonus-tiers/` documentado no OpenAPI com tag, resumo e descrição.
   - Rótulo acessível no seletor de 1ª recarga do simulador de bônus em `/panel/admin/wallet`.
+- **Bootstrap do ambiente Python**: mantido
+  `lingua-language-detector==2.2.0`, que oferece wheel para Windows 64-bit com
+  Python 3.14. A versão antiga `1.3.4` dependia de uma faixa de `regex` sem
+  wheel compatível e interrompia a instalação.
 
 - **Geração de PIX no checkout Mercado Pago**:
   - Correção no callback de envio do Mercado Pago Payment Brick (`mountMercadoPagoBrick` e `WalletPage`), que omitia a identificação do pagador (`CPF`/`CNPJ`), nome e sobrenome na transação via PIX, provocando recusa do backend por ausência de documento e silenciando o erro na tela.

@@ -17,7 +17,8 @@ from apps.marketplace.domain.exceptions import (
     ListingNotFoundError,
 )
 from apps.marketplace.domain.repositories import ICharacterListingRepository
-from apps.server.domain.access import IAccountAccessService
+from apps.server.domain.access import IAccountAccessService, same_linked_user
+from apps.server.domain.character_edit import ICharacterCustodyService
 from apps.server.domain.exceptions import (
     CharacterOfflineRequiredError,
     GameAccountNotFoundError,
@@ -100,12 +101,14 @@ class CreateListingUseCase(UseCase[CreateListingInput, CharacterListingEntity]):
         listings: ICharacterListingRepository,
         auctions: IAuctionRepository,
         lineage: ILineageGateway,
+        custody: ICharacterCustodyService,
         access: IAccountAccessService,
         unit_of_work: UnitOfWork,
     ) -> None:
         self._listings = listings
         self._auctions = auctions
         self._lineage = lineage
+        self._custody = custody
         self._access = access
         self._unit_of_work = unit_of_work
 
@@ -128,27 +131,37 @@ class CreateListingUseCase(UseCase[CreateListingInput, CharacterListingEntity]):
         bag_items = [asdict(item) for item in self._lineage.list_character_items(char.char_id)]
         skills = [asdict(skill) for skill in self._lineage.list_character_skills(char.char_id)]
         master = getattr(settings, "MARKETPLACE_MASTER_ACCOUNT", "MARKETPLACE_SYSTEM")
-        with self._unit_of_work:
-            self._lineage.transfer_character(data.char_id, master, from_account=login)
-            return self._listings.create(
-                data.user_id,
-                char_id=char.char_id,
-                char_name=char.name,
-                char_level=char.level,
-                char_class=char.class_id,
-                char_title=char.title,
-                char_sex=char.sex,
-                char_pvp=char.pvp,
-                char_pk=char.pk,
-                char_clan_name=char.clan_name,
-                char_is_clan_leader=char.is_clan_leader,
-                equipment=equipment,
-                bag_items=bag_items,
-                skills=skills,
-                old_account=login,
-                price=data.price,
-                notes=data.notes,
-            )
+        in_custody = False
+        try:
+            with self._unit_of_work:
+                self._custody.place_in_custody(data.char_id, from_account=login, custody_account=master)
+                in_custody = True
+                return self._listings.create(
+                    data.user_id,
+                    char_id=char.char_id,
+                    char_name=char.name,
+                    char_level=char.level,
+                    char_class=char.class_id,
+                    char_title=char.title,
+                    char_sex=char.sex,
+                    char_pvp=char.pvp,
+                    char_pk=char.pk,
+                    char_clan_name=char.clan_name,
+                    char_is_clan_leader=char.is_clan_leader,
+                    equipment=equipment,
+                    bag_items=bag_items,
+                    skills=skills,
+                    old_account=login,
+                    price=data.price,
+                    notes=data.notes,
+                )
+        except Exception:
+            if in_custody:
+                self._custody.release_from_custody(
+                    data.char_id, custody_account=master, to_account=login
+                )
+                self._custody.unlock_character(data.char_id)
+            raise
 
 
 @dataclass(frozen=True, slots=True)
@@ -163,6 +176,7 @@ class PurchaseListingInput:
     buyer_id: UUID
     buyer_username: str
     listing_id: UUID
+    destination_login: str = ""
 
 
 class PurchaseListingUseCase(UseCase[PurchaseListingInput, CharacterListingEntity]):
@@ -179,50 +193,152 @@ class PurchaseListingUseCase(UseCase[PurchaseListingInput, CharacterListingEntit
         self,
         listings: ICharacterListingRepository,
         lineage: ILineageGateway,
+        custody: ICharacterCustodyService,
+        access: IAccountAccessService,
         wallets: IWalletRepository,
         unit_of_work: UnitOfWork,
     ) -> None:
         self._listings = listings
         self._lineage = lineage
+        self._custody = custody
+        self._access = access
         self._wallets = wallets
         self._unit_of_work = unit_of_work
 
     def execute(self, data: PurchaseListingInput) -> CharacterListingEntity:
-        with self._unit_of_work:
-            listing = self._listings.get_by_id(data.listing_id, lock=True)
-            if listing is None:
-                raise ListingNotFoundError()
-            if listing.status != "for_sale":
-                raise ListingNotForSaleError()
-            if listing.seller_id == data.buyer_id:
-                raise CannotBuyOwnListingError()
-            limit = int(getattr(settings, "MAX_CHARACTERS_PER_ACCOUNT", 7))
-            if self._lineage.count_characters(data.buyer_username) >= limit:
-                raise CharacterSlotLimitError()
-            master = getattr(settings, "MARKETPLACE_MASTER_ACCOUNT", "MARKETPLACE_SYSTEM")
-            if not self._lineage.verify_character_ownership(listing.char_id, master):
-                raise ListingNotForSaleError("Personagem não está na conta do marketplace.")
-            buyer_wallet = self._wallets.get_or_create(data.buyer_id)
-            if buyer_wallet.balance < listing.price:
-                raise InsufficientBalanceError()
-            seller_wallet = self._wallets.get_or_create(listing.seller_id)
-            sold = self._listings.mark_sold(listing.id, data.buyer_id, data.buyer_username)
-            self._wallets.debit(
-                buyer_wallet.id,
-                listing.price,
-                destination=listing.seller_username,
-                description=f"Compra de personagem: {listing.char_name}",
-            )
-            self._wallets.credit(
-                seller_wallet.id,
-                listing.price,
-                origin=data.buyer_username,
-                description=f"Venda de personagem: {listing.char_name}",
-            )
-            self._lineage.transfer_character(
-                listing.char_id, data.buyer_username, from_account=master
-            )
+        transferred = False
+        destination = ""
+        listing = None
+        master = getattr(settings, "MARKETPLACE_MASTER_ACCOUNT", "MARKETPLACE_SYSTEM")
+        try:
+            with self._unit_of_work:
+                listing = self._listings.get_by_id(data.listing_id, lock=True)
+                if listing is None:
+                    raise ListingNotFoundError()
+                if listing.status != "for_sale":
+                    raise ListingNotForSaleError()
+                if listing.seller_id == data.buyer_id:
+                    raise CannotBuyOwnListingError()
+                if not self._lineage.verify_character_ownership(listing.char_id, master):
+                    raise ListingNotForSaleError("Personagem não está na conta do marketplace.")
+                accounts = self._access.list_accounts(data.buyer_id, data.buyer_username)
+                requested = data.destination_login.strip()
+                if requested:
+                    selected = next((account for account in accounts if account.login.lower() == requested.lower()), None)
+                    if selected is None:
+                        raise AuthorizationError()
+                    destination = selected.login
+                else:
+                    primary = next((account for account in accounts if account.is_primary), None)
+                    ordered = ([primary] if primary else []) + [account for account in accounts if account != primary]
+                    limit = int(getattr(settings, "MAX_CHARACTERS_PER_ACCOUNT", 7))
+                    destination = next(
+                        (account.login for account in ordered if self._lineage.count_characters(account.login) < limit),
+                        "",
+                    )
+                    if accounts and not destination:
+                        raise CharacterSlotLimitError()
+                if destination:
+                    limit = int(getattr(settings, "MAX_CHARACTERS_PER_ACCOUNT", 7))
+                    if self._lineage.count_characters(destination) >= limit:
+                        raise CharacterSlotLimitError()
+                buyer_wallet = self._wallets.get_or_create(data.buyer_id)
+                if buyer_wallet.balance < listing.price:
+                    raise InsufficientBalanceError()
+                seller_wallet = self._wallets.get_or_create(listing.seller_id)
+                sold = (
+                    self._listings.mark_sold(listing.id, data.buyer_id, destination)
+                    if destination
+                    else self._listings.mark_pending_delivery(listing.id, data.buyer_id)
+                )
+                self._wallets.debit(
+                    buyer_wallet.id,
+                    listing.price,
+                    destination=listing.seller_username,
+                    description=f"Compra de personagem: {listing.char_name}",
+                )
+                self._wallets.credit(
+                    seller_wallet.id,
+                    listing.price,
+                    origin=data.buyer_username,
+                    description=f"Venda de personagem: {listing.char_name}",
+                )
+                if destination:
+                    self._custody.release_from_custody(
+                        listing.char_id, custody_account=master, to_account=destination
+                    )
+                    transferred = True
+            if destination:
+                self._custody.unlock_character(sold.char_id)
             return sold
+        except Exception:
+            if transferred and listing is not None:
+                self._custody.release_from_custody(
+                    listing.char_id, custody_account=destination, to_account=master
+                )
+            raise
+
+
+@dataclass(frozen=True, slots=True)
+class DeliverPendingMarketplacePurchasesInput:
+    """Conta recém-vinculada que pode receber compras quitadas em custódia."""
+
+    buyer_id: UUID
+    login: str
+
+
+class DeliverPendingMarketplacePurchasesUseCase(UseCase[DeliverPendingMarketplacePurchasesInput, int]):
+    """Entrega compras pendentes quando o comprador vincula uma conta Lineage válida.
+
+    A compra já foi quitada no momento da aquisição. Esta operação só libera a
+    custódia para uma conta que o gateway confirma como pertencente ao mesmo
+    usuário do painel; nenhuma cobrança é repetida.
+    """
+
+    def __init__(
+        self,
+        listings: ICharacterListingRepository,
+        lineage: ILineageGateway,
+        custody: ICharacterCustodyService,
+        unit_of_work: UnitOfWork,
+    ) -> None:
+        self._listings = listings
+        self._lineage = lineage
+        self._custody = custody
+        self._unit_of_work = unit_of_work
+
+    def execute(self, data: DeliverPendingMarketplacePurchasesInput) -> int:
+        account = self._lineage.get_account(data.login)
+        if account is None or not same_linked_user(account.linked_user_id, data.buyer_id):
+            return 0
+        delivered = 0
+        for candidate in self._listings.list_pending_delivery(data.buyer_id):
+            transferred = False
+            master = getattr(settings, "MARKETPLACE_MASTER_ACCOUNT", "MARKETPLACE_SYSTEM")
+            try:
+                with self._unit_of_work:
+                    listing = self._listings.get_by_id(candidate.id, lock=True)
+                    if listing is None or listing.status != "pending_delivery" or listing.buyer_id != data.buyer_id:
+                        continue
+                    limit = int(getattr(settings, "MAX_CHARACTERS_PER_ACCOUNT", 7))
+                    if self._lineage.count_characters(data.login) >= limit:
+                        continue
+                    if not self._lineage.verify_character_ownership(listing.char_id, master):
+                        continue
+                    self._custody.release_from_custody(
+                        listing.char_id, custody_account=master, to_account=data.login
+                    )
+                    transferred = True
+                    self._listings.mark_delivered(listing.id, data.login)
+                self._custody.unlock_character(candidate.char_id)
+                delivered += 1
+            except Exception:
+                if transferred:
+                    self._custody.release_from_custody(
+                        candidate.char_id, custody_account=data.login, to_account=master
+                    )
+                raise
+        return delivered
 
 
 @dataclass(frozen=True, slots=True)
@@ -251,29 +367,42 @@ class CancelListingUseCase(UseCase[CancelListingInput, CharacterListingEntity]):
         self,
         listings: ICharacterListingRepository,
         lineage: ILineageGateway,
+        custody: ICharacterCustodyService,
         unit_of_work: UnitOfWork,
     ) -> None:
         self._listings = listings
         self._lineage = lineage
+        self._custody = custody
         self._unit_of_work = unit_of_work
 
     def execute(self, data: CancelListingInput) -> CharacterListingEntity:
-        with self._unit_of_work:
-            listing = self._listings.get_by_id(data.listing_id, lock=True)
-            if listing is None:
-                raise ListingNotFoundError()
-            if listing.seller_id != data.user_id:
-                raise AuthorizationError()
-            if listing.status != "for_sale":
-                raise ListingNotForSaleError()
-            limit = int(getattr(settings, "MAX_CHARACTERS_PER_ACCOUNT", 7))
-            if self._lineage.count_characters(listing.old_account) >= limit:
-                raise CharacterSlotLimitError()
-            master = getattr(settings, "MARKETPLACE_MASTER_ACCOUNT", "MARKETPLACE_SYSTEM")
-            if not self._lineage.verify_character_ownership(listing.char_id, master):
-                raise ListingNotForSaleError("Personagem não está na conta do marketplace.")
-            cancelled = self._listings.mark_cancelled(listing.id)
-            self._lineage.transfer_character(
-                listing.char_id, listing.old_account, from_account=master
-            )
+        transferred = False
+        listing = None
+        master = getattr(settings, "MARKETPLACE_MASTER_ACCOUNT", "MARKETPLACE_SYSTEM")
+        try:
+            with self._unit_of_work:
+                listing = self._listings.get_by_id(data.listing_id, lock=True)
+                if listing is None:
+                    raise ListingNotFoundError()
+                if listing.seller_id != data.user_id:
+                    raise AuthorizationError()
+                if listing.status != "for_sale":
+                    raise ListingNotForSaleError()
+                limit = int(getattr(settings, "MAX_CHARACTERS_PER_ACCOUNT", 7))
+                if self._lineage.count_characters(listing.old_account) >= limit:
+                    raise CharacterSlotLimitError()
+                if not self._lineage.verify_character_ownership(listing.char_id, master):
+                    raise ListingNotForSaleError("Personagem não está na conta do marketplace.")
+                cancelled = self._listings.mark_cancelled(listing.id)
+                self._custody.release_from_custody(
+                    listing.char_id, custody_account=master, to_account=listing.old_account
+                )
+                transferred = True
+            self._custody.unlock_character(cancelled.char_id)
             return cancelled
+        except Exception:
+            if transferred and listing is not None:
+                self._custody.release_from_custody(
+                    listing.char_id, custody_account=listing.old_account, to_account=master
+                )
+            raise

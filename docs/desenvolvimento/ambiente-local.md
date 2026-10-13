@@ -22,7 +22,9 @@ Escolha Docker ou instalação nativa.
 
 ### Instalação nativa
 
-- Python 3.14 recomendado, igual à imagem do backend.
+- Python 3.14 **64-bit** recomendado, igual à imagem do backend. Instalações
+  32-bit não são suportadas pelas dependências de processamento de linguagem e
+  modelos locais.
 - Node.js 22 e npm compatível.
 - Redis apenas para Celery, Channels compartilhado ou configuração semelhante à produção.
 - PostgreSQL opcional; o ambiente de desenvolvimento usa SQLite por padrão.

@@ -65,6 +65,8 @@ def execute_paid_service(
     wallets,
     operations: ICharacterServiceOperationRepository,
     unit_of_work: UnitOfWork,
+    apply=None,
+    require_offline: bool = True,
 ):
     """Reserva e confirma uma operação; repetição não cobra nem chama o jogo novamente."""
     if price < 0:
@@ -98,9 +100,11 @@ def execute_paid_service(
             raise ConflictError(
                 "Este personagem tem um serviço pendente de conferência pela equipe."
             )
-        char = require_offline_character(
-            lineage.get_character(actor.login, actor.char_id)
-        )
+        char = lineage.get_character(actor.login, actor.char_id)
+        if char is None:
+            raise GameAccountNotFoundError()
+        if require_offline:
+            char = require_offline_character(char)
         already_applied = service_already_applied(service, char, value)
         amount = 0 if already_applied else price
         wallet = wallets.get_or_create(actor.user_id)
@@ -124,7 +128,10 @@ def execute_paid_service(
     if already_applied:
         return
     try:
-        apply_paid_service(lineage, service, actor, value)
+        if apply is not None:
+            apply()
+        else:
+            apply_paid_service(lineage, service, actor, value)
     except (
         CharacterOfflineRequiredError,
         CharacterServiceUnavailableError,
@@ -168,6 +175,11 @@ def service_already_applied(service: str, char, value: str) -> bool:
         return int(char.karma or 0) == 0
     if service == "CLEAR_PK":
         return int(char.pk or 0) == 0
+    if service == "CHANGE_BASE_CLASS":
+        try:
+            return int(value.split("|", 1)[0]) == int(char.class_id)
+        except (TypeError, ValueError):
+            return False
     if service == "APPEARANCE":
         try:
             hair_style, hair_color, face = parse_appearance(value, char.sex)

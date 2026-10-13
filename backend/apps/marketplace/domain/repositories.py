@@ -34,6 +34,12 @@ class ICharacterListingRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def list_pending_delivery(self, buyer_id: UUID) -> list[CharacterListingEntity]:
+        """Lista compras quitadas que ainda aguardam uma conta de jogo do comprador."""
+
+        raise NotImplementedError
+
+    @abstractmethod
     def find_active_by_char(self, char_id: int) -> CharacterListingEntity | None:
         raise NotImplementedError
 
@@ -68,6 +74,18 @@ class ICharacterListingRepository(ABC):
         Zero linhas afetadas significa que outro comprador ou um cancelamento já
         levou o anúncio; o adaptador lança ``ListingNotForSaleError``.
         """
+
+        raise NotImplementedError
+
+    @abstractmethod
+    def mark_pending_delivery(self, listing_id: UUID, buyer_id: UUID) -> CharacterListingEntity:
+        """Transiciona uma compra sem conta de destino para custódia pendente."""
+
+        raise NotImplementedError
+
+    @abstractmethod
+    def mark_delivered(self, listing_id: UUID, new_account: str) -> CharacterListingEntity:
+        """Confirma a entrega de uma compra pendente na conta de jogo vinculada."""
 
         raise NotImplementedError
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/npcs.xsd">
+	<npc id="36603" displayId="13155" name="Seller" usingServerSideName="true" title="Gm Shop" usingServerSideTitle="true" type="Merchant">
+		<collision>
+			<radius normal="8" />
+			<height normal="30" />
+		</collision>
+	</npc>
+	<!-- Delevel Manager -->
+	<npc id="36604" displayId="32534" name="Ammit" usingServerSideName="true" title="Experience Devourer" usingServerSideTitle="true" type="Folk">
+		<collision>
+			<radius normal="19" />
+			<height normal="44" />
+		</collision>
+	</npc>
+	<!-- Nobless Manager -->
+	<npc id="36605" displayId="32138" name="Thranduil" usingServerSideName="true" title="Noblesse Master" usingServerSideTitle="true" type="Folk">
+		<collision>
+			<radius normal="18" />
+			<height normal="28" />
+		</collision>
+	</npc>
+	<!-- Achievement NPC -->
+	<npc id="70000" displayId="31275" name="Drika" usingServerSideName="true" title="Achievement Master" usingServerSideTitle="true" type="Folk">
+		<collision>
+			<radius normal="8" />
+			<height normal="30" />
+		</collision>
+	</npc>
+	<!-- Collection NPC -->
+	<npc id="70001" displayId="32744" name="Lorenzo" usingServerSideName="true" title="Collectible Archives" usingServerSideTitle="true" type="Folk">
+		<collision>
+			<radius normal="8" />
+			<height normal="23" />
+		</collision>
+	</npc>
+</list>

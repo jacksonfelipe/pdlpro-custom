@@ -3,7 +3,7 @@ import { Card } from '../components/ui/Card'
 import { apiErrorMessage } from '../lib/errors'
 import { Button } from '../components/ui/Button'
 import { useEffect, useState, type FormEvent } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { RefreshCcw } from 'lucide-react'
@@ -53,8 +53,22 @@ export function MarketplacePage() {
   const [price, setPrice] = useState('')
   const [notes, setNotes] = useState('')
   const [selectedListing, setSelectedListing] = useState<ApiCharacterListing | null>(null)
+  const [deliveryLogin, setDeliveryLogin] = useState('')
   const [pendingListingId, setPendingListingId] = useState('')
   const [publishing, setPublishing] = useState(false)
+  const deliveryCharacters = useQueries({
+    queries: availableAccounts.map((account) => ({
+      queryKey: ['marketplace-delivery-characters', account.login],
+      queryFn: () => lineageApi.characters(account.login),
+      enabled: Boolean(user),
+    })),
+  })
+  const deliveryAccounts = availableAccounts.map((account, index) => ({
+    login: account.login,
+    count: deliveryCharacters[index]?.data?.length,
+    canReceive: (deliveryCharacters[index]?.data?.length ?? 0) < 7,
+  }))
+  const allLinkedAccountsFull = deliveryAccounts.length > 0 && deliveryAccounts.every((account) => !account.canReceive)
 
   const selectedCharacterEquipment = useQuery({
     queryKey: ['marketplace-character-equipment', login, charId],
@@ -98,9 +112,9 @@ export function MarketplacePage() {
   async function buy(id: string) {
     setPendingListingId(id)
     try {
-      const updated = await marketplaceApi.buy(id)
+      const updated = await (deliveryLogin ? marketplaceApi.buy(id, deliveryLogin) : marketplaceApi.buy(id))
       setSelectedListing(updated)
-      toast.success(t('marketplace.toast.bought'))
+      toast.success(t(updated.status === 'pending_delivery' ? 'marketplace.toast.awaitingAccount' : 'marketplace.toast.bought'))
       await refresh()
     } catch (error) {
       toast.error(apiErrorMessage(error, t('marketplace.toast.buyFailed')))
@@ -150,6 +164,10 @@ export function MarketplacePage() {
             listing={selectedListing}
             isOwner={Boolean(user && selectedListing.seller_username === user.username)}
             pending={pendingListingId === selectedListing.id}
+            deliveryAccounts={deliveryAccounts}
+            deliveryLogin={deliveryLogin}
+            allLinkedAccountsFull={allLinkedAccountsFull}
+            onDeliveryLoginChange={setDeliveryLogin}
             onClose={() => setSelectedListing(null)}
             onBuy={(id) => void buy(id)}
             onCancel={(id) => void cancel(id)}

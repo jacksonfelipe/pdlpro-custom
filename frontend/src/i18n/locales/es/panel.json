@@ -448,6 +448,7 @@
     "authRequired": "Entra para vender o comprar personajes.",
     "status": {
       "for_sale": "A la venta",
+      "pending_delivery": "Esperando cuenta de juego",
       "sold": "Vendido",
       "cancelled": "Cancelado",
       "disputed": "En disputa"
@@ -512,6 +513,11 @@
       "cancelListing": "Cancelar anuncio",
       "processing": "Procesando...",
       "buy": "Comprar personaje",
+      "deliveryAccount": "Cuenta que recibirá el personaje",
+      "deliveryAuto": "Elegir automáticamente una cuenta con espacio",
+      "deliveryOption": "{{login}} · {{count}}/7 personajes",
+      "deliveryPendingAccount": "La compra quedará protegida en custodia hasta que vincules una cuenta L2.",
+      "deliveryFull": "Todas las cuentas vinculadas llegaron a 7 personajes. Vincula o crea una cuenta con espacio antes de comprar.",
       "ownerNote": "Esta es la misma vista que ve el comprador.",
       "titleEyebrow": "Título",
       "noTitle": "Sin título",
@@ -528,6 +534,7 @@
       "listed": "Personaje anunciado",
       "listFailed": "No se pudo anunciar",
       "bought": "Compra finalizada",
+      "awaitingAccount": "Compra finalizada. Vincula una cuenta L2 para recibir el personaje.",
       "buyFailed": "No se pudo comprar",
       "cancelled": "Venta cancelada",
       "cancelFailed": "No se pudo cancelar"
@@ -2038,6 +2045,24 @@
         "submit": "Limpiar PK",
         "submitting": "Limpiando..."
       },
+      "classChange": {
+        "title": "Cambiar clase base",
+        "hint": "Misma raza: {{sameRace}}. Otra raza: {{crossRace}}.",
+        "target": "Nueva clase base",
+        "placeholder": "Selecciona la nueva clase",
+        "subclasses": "Destino de las subclases",
+        "reserve": "Reservar para recuperar al volver ({{price}})",
+        "keep": "Conservar subclases ({{price}})",
+        "delete": "Eliminar subclases sin reserva",
+        "enchantsTitle": "Migrar skills encantadas",
+        "enchantsHint": "Indica el ID de la skill de la nueva clase que recibirá cada enchant. Déjalo vacío para no migrarla.",
+        "enchantTarget": "{{name}} +{{enchant}} → ID de la nueva skill",
+        "skillIdPlaceholder": "No migrar esta skill",
+        "targetSkillOption": "{{name}} · Nv. {{level}}",
+        "warning": "El personaje será desconectado y bloqueado durante la operación. Journey valida clase, skills y límites antes de concluir.",
+        "submit": "Cambiar clase",
+        "submitting": "Cambiando clase..."
+      },
       "shortcuts": {
         "title": "Atajos",
         "hint": "Los mismos destinos del panel anterior.",
@@ -2080,7 +2105,9 @@
       "karmaDone": "Karma limpio",
       "karmaError": "No fue posible limpiar el karma",
       "pkDone": "PK limpio",
-      "pkError": "No fue posible limpiar el PK"
+      "pkError": "No fue posible limpiar el PK",
+      "classChanged": "Clase cambiada correctamente",
+      "classError": "No fue posible cambiar la clase"
     }
   },
   "programs": {

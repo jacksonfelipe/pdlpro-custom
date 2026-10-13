@@ -79,7 +79,6 @@ class LineageQueryCatalog:
         "delete_item_stack",
         "update_item_amount",
         "find_character_id_by_name",
-        "deposit_item",
     )
 
     def __init__(self, dialect: str, statements: dict[str, str]) -> None:

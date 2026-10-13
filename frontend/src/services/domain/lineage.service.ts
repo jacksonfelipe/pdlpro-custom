@@ -61,6 +61,10 @@ export interface ApiServicePrices {
   APPEARANCE?: string
   CLEAR_KARMA?: string
   CLEAR_PK?: string
+  CLASS_CHANGE_SAME_RACE?: string
+  CLASS_CHANGE_CROSS_RACE?: string
+  SUBCLASS_KEEP?: string
+  SUBCLASS_RESERVE?: string
   available?: string[]
   catalog?: {
     towns: ApiServiceTown[]
@@ -70,6 +74,7 @@ export interface ApiServicePrices {
       hair_color_max: number
       face_max: number
     }
+    class_change?: { class_ids: number[] }
   }
 }
 
@@ -121,6 +126,12 @@ export interface ApiGameSkill {
   enchant_route: number
   enchant_max: number
   enchantable: boolean
+}
+
+export interface ApiBaseClassSkill {
+  skill_id: number
+  level: number
+  name: string
 }
 
 export interface ApiCharacterEquipmentItem extends ApiGameItem {
@@ -220,9 +231,21 @@ export const lineageApi = {
       method: 'POST',
       body: JSON.stringify({ login, char_id, request_key }),
     }),
+  changeBaseClass: (payload: {
+    login: string
+    char_id: number
+    target_class_id: number
+    subclass_disposition: 'keep' | 'delete' | 'reserve'
+    transfers: Array<{ source_skill_id: number; target_skill_id: number; source_enchant: number }>
+    request_key?: string
+  }) => request('/customer/server/characters/class/', { method: 'POST', body: JSON.stringify(payload) }),
   characterSkills: (charId: number, login?: string) =>
     request<ApiGameSkill[]>(
       `/customer/server/characters/${charId}/skills/${login ? `?login=${encodeURIComponent(login)}` : ''}`,
+    ),
+  baseClassSkills: (charId: number, targetClassId: number, login: string) =>
+    request<ApiBaseClassSkill[]>(
+      `/customer/server/characters/${charId}/class-skills/?login=${encodeURIComponent(login)}&target_class_id=${targetClassId}`,
     ),
   createCharacter: (payload: {
     login: string
