@@ -1,4 +1,4 @@
-"""WSGI config for PDL PRO."""
+"""WSGI config for Dimes."""
 
 import os
 

@@ -1265,7 +1265,7 @@
       "descriptionHint": "Text sent to the provider for new payments. Leave blank to use the default description.",
       "variablesHelp": "Variable help — {{provider}}",
       "variablesHint": "Use {quantidade} for the purchased quantity, {pacote} for the package code and {moeda} for the current virtual currency name. Example: {quantidade} {moeda} — {pacote}. Variables are replaced in new charges from both providers. Unknown variables remain literal. Leave blank to use the default.",
-      "stripeDescriptionPlaceholder": "PDL PRO — {quantidade} {{coinName}}",
+      "stripeDescriptionPlaceholder": "Dimes — {quantidade} {{coinName}}",
       "mpDescriptionPlaceholder": "{{coinNameTitle}} PDL ({pacote})",
       "stripePresentmentHint": "Supported charge currencies in Stripe, comma-separated. E.g.: BRL, USD, EUR",
       "coinNameHint": "Up to 40 characters. E.g. Blablabla Coin. Used in balances, prices, top-ups and transfers. Leave blank to use the active language name.",

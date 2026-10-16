@@ -130,7 +130,7 @@ const statusFixture = {
       { key: 'HCAPTCHA_SITE_KEY', configured: false, fingerprint: '', value: null, masked: '' },
       { key: 'HCAPTCHA_SECRET_KEY', configured: false, fingerprint: '', value: null, masked: '' },
       { key: 'WEBAUTHN_RP_ID', configured: false, fingerprint: '', value: '', masked: '' },
-      { key: 'WEBAUTHN_RP_NAME', configured: true, fingerprint: '', value: 'PDL PRO', masked: '' },
+      { key: 'WEBAUTHN_RP_NAME', configured: true, fingerprint: '', value: 'Dimes', masked: '' },
       { key: 'WEBAUTHN_ORIGINS', configured: true, fingerprint: '', value: [], masked: '' },
     ],
   },
@@ -240,7 +240,7 @@ describe('AdminIntegrationsPage', () => {
     mpHelp.focus()
     await user.keyboard('{Enter}')
     expect(mpHelp).toHaveAttribute('aria-expanded', 'true')
-    expect(await screen.findByPlaceholderText('PDL PRO — {quantidade} moedas')).toHaveValue('')
+    expect(await screen.findByPlaceholderText('Dimes — {quantidade} moedas')).toHaveValue('')
     expect(screen.getByPlaceholderText('Moedas PDL ({pacote})')).toHaveValue('')
     await user.click(screen.getByRole('combobox', { name: 'Checkout Stripe' }))
     await user.click(screen.getByRole('option', { name: 'No site do provedor (redirecionamento)' }))

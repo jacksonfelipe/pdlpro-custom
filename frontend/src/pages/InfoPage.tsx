@@ -125,7 +125,7 @@ export function InfoPage() {
             </div>
             <div className="info-server-heading">
               <span>{t('info.mainServer')}</span>
-              <strong>{data?.name?.trim() || 'PDL PRO'}</strong>
+              <strong>{data?.name?.trim() || 'Dimes'}</strong>
             </div>
             <MicroResource code="server-status"><div className={`info-live-status ${statusClass}`}>
               <i aria-hidden="true" />

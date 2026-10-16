@@ -1,6 +1,6 @@
 import { firstText } from './site-metadata'
 
-export const DEFAULT_SITE_BRAND = 'PDL PRO'
+export const DEFAULT_SITE_BRAND = 'Dimes'
 export const DEFAULT_SITE_TAGLINE = 'Lineage'
 
 export interface SiteBrandSource {

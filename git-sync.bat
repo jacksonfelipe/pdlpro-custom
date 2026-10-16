@@ -32,6 +32,43 @@ if not exist ".git" (
     exit /b 1
 )
 
+:: -----------------------------------------------------------------------
+:: Verifica identidade git (user.name e user.email) — necessario para commits
+:: -----------------------------------------------------------------------
+:CHECK_IDENTITY
+set GIT_USER_NAME=
+set GIT_USER_EMAIL=
+for /f "delims=" %%N in ('git config user.name 2^>nul') do set GIT_USER_NAME=%%N
+for /f "delims=" %%E in ('git config user.email 2^>nul') do set GIT_USER_EMAIL=%%E
+
+if "!GIT_USER_NAME!"=="" (
+    cls
+    echo ===============================================================================
+    echo  [CONFIGURACAO INICIAL] Identidade Git nao encontrada para este usuario
+    echo ===============================================================================
+    echo  O Git precisa saber quem voce e para registrar os commits corretamente.
+    echo  Isso so precisa ser feito uma vez nesta maquina.
+    echo ===============================================================================
+    echo.
+    set /p GIT_USER_NAME="Seu nome completo ou apelido (ex: jacksonfelipe): "
+    if "!GIT_USER_NAME!"=="" set GIT_USER_NAME=jacksonfelipe
+    git config --global user.name "!GIT_USER_NAME!"
+    echo [OK] Nome registrado: !GIT_USER_NAME!
+    echo.
+)
+
+if "!GIT_USER_EMAIL!"=="" (
+    echo  Email nao configurado. Pode usar o email do GitHub no formato:
+    echo  usuario@users.noreply.github.com
+    echo.
+    set /p GIT_USER_EMAIL="Seu email (ENTER para usar jacksonfelipe@users.noreply.github.com): "
+    if "!GIT_USER_EMAIL!"=="" set GIT_USER_EMAIL=jacksonfelipe@users.noreply.github.com
+    git config --global user.email "!GIT_USER_EMAIL!"
+    echo [OK] Email registrado: !GIT_USER_EMAIL!
+    echo.
+    timeout /t 2 >nul
+)
+
 :MENU
 cls
 :: Detecta branch atual
@@ -55,18 +92,37 @@ echo  Remoto Oficial  (upstream) : !HAS_UPSTREAM! (1 = Configurado, 0 = Ausente)
 echo ===============================================================================
 echo.
 echo  [1] SALVAR E ENVIAR TUDO (Commit + Push para seu repositorio 'origin')
+echo      -^> Quando usar: No meio ou fim do dia para salvar seu progresso no seu GitHub,
+echo         sem puxar atualizacoes oficiais ainda.
+echo.
 echo  [2] PUXAR ATUALIZACOES OFICIAIS (Fetch + Merge de 'upstream/!CURRENT_BRANCH!')
-echo  [3] SINCRONIZACAO COMPLETA (Commit Local -^> Puxar Upstream -^> Enviar Origin)
-echo  [4] VER STATUS DETALHADO (Arquivos alterados, branches e diferencas)
+echo      -^> Quando usar: Quando quiser testar novidades do PDL PRO oficial localmente
+echo         sem subir nada para o seu GitHub ainda.
+echo.
+echo  [3] SINCRONIZACAO COMPLETA (Commit Local -^> Puxar Upstream -^> Enviar Origin) [RECOMENDADO]
+echo      -^> Quando usar: Seu botao do dia a dia! Salva suas melhorias, puxa o oficial
+echo         e sobe tudo mesclado e atualizado para o seu GitHub.
+echo.
+echo  [4] VER STATUS DETALHADO (Arquivos alterados, commits pendentes e remotos)
+echo.
 echo  [5] GUARDAR / RECUPERAR ALTERACOES (Git Stash / Stash Pop)
+echo      -^> Quando usar: Deixar o workspace limpo temporariamente sem criar commit.
+echo.
 echo  [6] RESOLVER / CANCELAR CONFLITO DE MERGE (Abortar ou listar conflitos)
+echo      -^> Quando usar: Se um merge apontar arquivos em conflito e quiser resolver ou cancelar.
+echo.
 echo  [7] DIAGNOSTICO E CONFIGURACAO DE REMOTOS (Ver/Corrigir links origin e upstream)
 echo  [8] VER HISTORICO RECENTE DE COMMITS
+echo  [9] GUIA DETALHADO: QUANDO USAR CADA OPCAO? (Explicacoes passo a passo)
+echo.
+echo  [10] PUXAR DO SEU REPOSITORIO CUSTOM (origin -^> local)
+echo       -^> Quando usar: Voce fez mudancas no VPS ou em outro PC e quer baixar
+echo          para esta maquina sem subir nada novo.
 echo.
 echo  [0] SAIR
 echo ===============================================================================
 set OPTION=
-set /p OPTION="Escolha uma opcao [0-8]: "
+set /p OPTION="Escolha uma opcao [0-9, 10]: "
 
 if "%OPTION%"=="1" goto OP_COMMIT_PUSH
 if "%OPTION%"=="2" goto OP_PULL_UPSTREAM
@@ -76,6 +132,8 @@ if "%OPTION%"=="5" goto OP_STASH
 if "%OPTION%"=="6" goto OP_RESOLVE_MERGE
 if "%OPTION%"=="7" goto OP_DIAGNOSTIC
 if "%OPTION%"=="8" goto OP_LOG
+if "%OPTION%"=="9" goto OP_HELP
+if "%OPTION%"=="10" goto OP_PULL_ORIGIN
 if "%OPTION%"=="0" goto EXIT_SCRIPT
 
 echo.
@@ -94,7 +152,7 @@ echo ===========================================================================
 echo.
 
 call :VALIDATE_ORIGIN
-if %ERRORLEVEL% neq 0 goto END_OP
+if !ERRORLEVEL! neq 0 goto END_OP
 
 echo  Verificando alteracoes pendentes...
 git status --short
@@ -159,7 +217,7 @@ echo ===========================================================================
 echo.
 
 call :VALIDATE_UPSTREAM
-if %ERRORLEVEL% neq 0 goto END_OP
+if !ERRORLEVEL! neq 0 goto END_OP
 
 echo [1/3] Verificando se ha arquivos modificados no ambiente de trabalho...
 git status --porcelain > "%temp%\git_pdl_dirty.txt"
@@ -200,7 +258,7 @@ if %ERRORLEVEL% neq 0 (
 
 echo.
 echo [3/3] Mesclando atualizacoes (git merge upstream/!CURRENT_BRANCH!)...
-git merge upstream/!CURRENT_BRANCH!
+git merge --no-edit upstream/!CURRENT_BRANCH!
 if %ERRORLEVEL% neq 0 (
     echo.
     echo ============================================================================
@@ -238,9 +296,9 @@ echo ===========================================================================
 echo.
 
 call :VALIDATE_ORIGIN
-if %ERRORLEVEL% neq 0 goto END_OP
+if !ERRORLEVEL! neq 0 goto END_OP
 call :VALIDATE_UPSTREAM
-if %ERRORLEVEL% neq 0 goto END_OP
+if !ERRORLEVEL! neq 0 goto END_OP
 
 echo [PASSO 1/3] Salvando alteracoes locais...
 git add .
@@ -254,7 +312,7 @@ if %ERRORLEVEL% neq 0 (
     goto END_OP
 )
 
-git merge upstream/!CURRENT_BRANCH!
+git merge --no-edit upstream/!CURRENT_BRANCH!
 if %ERRORLEVEL% neq 0 (
     echo.
     echo [ERRO] Ocorreu um conflito ao mesclar com upstream.
@@ -264,24 +322,90 @@ if %ERRORLEVEL% neq 0 (
 )
 
 echo.
-echo [PASSO 3/3] Enviando tudo para o seu origin (origin/!CURRENT_BRANCH!)...
+echo [PASSO 3/3] Preparando registro da versao e envio...
+echo.
+
+:: --- Le a versao atual do version.json ---
+set PDL_VERSION=desconhecida
+for /f "tokens=2 delims=:, " %%V in ('findstr /i "\"version\"" version.json 2^>nul') do (
+    set PDL_VERSION=%%~V
+)
+
+:: --- Coleta commits do upstream que chegaram ---
+set UPSTREAM_LOG=
+for /f "delims=" %%L in ('git log --oneline ORIG_HEAD..HEAD 2^>nul') do (
+    if "!UPSTREAM_LOG!"=="" (
+        set UPSTREAM_LOG=%%L
+    ) else (
+        set UPSTREAM_LOG=!UPSTREAM_LOG! ^| %%L
+    )
+)
+if "!UPSTREAM_LOG!"=="" set UPSTREAM_LOG=(nenhuma novidade do upstream nesta sincronizacao)
+
+:: --- Coleta commits customizados (antes do merge) ---
+set CUSTOM_LOG=
+for /f "delims=" %%L in ('git log --oneline upstream/!CURRENT_BRANCH!..ORIG_HEAD 2^>nul') do (
+    if "!CUSTOM_LOG!"=="" (
+        set CUSTOM_LOG=%%L
+    ) else (
+        set CUSTOM_LOG=!CUSTOM_LOG! ^| %%L
+    )
+)
+if "!CUSTOM_LOG!"=="" set CUSTOM_LOG=(sem commits customizados novos)
+
+echo ============================================================================
+echo  REVISAO FINAL - SINCRONIZACAO v!PDL_VERSION!
+echo  Destino: github.com/jacksonfelipe/pdlpro-custom  ^| Branch: !CURRENT_BRANCH!
+echo ============================================================================
+echo.
+echo  [+] Versao detectada  : v!PDL_VERSION!
+echo.
+echo  [UPSTREAM] Novidades do PDL PRO oficial:
+for /f "delims=" %%L in ('git log --oneline ORIG_HEAD..HEAD 2^>nul') do echo     - %%L
+if "!UPSTREAM_LOG!"=="(nenhuma novidade do upstream nesta sincronizacao)" echo     (nenhuma novidade nova)
+echo.
+echo  [CUSTOM] Suas correcoes e customizacoes:
+for /f "delims=" %%L in ('git log --oneline upstream/!CURRENT_BRANCH!..ORIG_HEAD 2^>nul') do echo     - %%L
+if "!CUSTOM_LOG!"=="(sem commits customizados novos)" echo     (sem commits proprios novos)
+echo.
+echo ============================================================================
+echo.
+set EXTRA_NOTE=
+set /p EXTRA_NOTE="Nota adicional para o registro (ENTER para usar a mensagem automatica): "
+echo.
+
+:: --- Monta mensagem de commit final ---
+if not "!EXTRA_NOTE!"=="" (
+    set FINAL_MSG=release: v!PDL_VERSION! - !EXTRA_NOTE!
+) else (
+    set FINAL_MSG=release: v!PDL_VERSION! - sincronizacao PDL PRO custom
+)
+
+git add .
+git commit --allow-empty -m "!FINAL_MSG!" -m "Upstream: !UPSTREAM_LOG!" -m "Custom: !CUSTOM_LOG!" >nul 2>&1
+
+echo  Enviando para jacksonfelipe/pdlpro-custom...
 git push origin !CURRENT_BRANCH!
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     git push -u origin !CURRENT_BRANCH!
 )
 
-if %ERRORLEVEL% equ 0 (
+if !ERRORLEVEL! equ 0 (
     echo.
     echo ============================================================================
-    echo  [SUCESSO COMPLETO!]
-    echo  Seu repositorio privado agora possui tanto as suas customizacoes
-    echo  quanto as ultimas atualizacoes do PDL PRO oficial!
+    echo  [SUCESSO COMPLETO!]  v!PDL_VERSION! registrado em:
+    echo  github.com/jacksonfelipe/pdlpro-custom
+    echo.
+    echo  Commit: !FINAL_MSG!
     echo ============================================================================
 ) else (
     echo.
-    echo [ERRO] Falha ao enviar para o origin. Verifique a conexao e autenticacao.
+    echo [ERRO] Falha ao enviar. Verifique conexao e autenticacao do GitHub.
 )
 goto END_OP
+
+
+
 
 :: ===============================================================================
 :: OPCAO 4: STATUS DETALHADO
@@ -379,7 +503,7 @@ if "%MERGE_OPT%"=="1" (
     )
 ) else if "%MERGE_OPT%"=="2" (
     git add .
-    git commit -m "merge: resolucao de conflitos com upstream/!CURRENT_BRANCH!"
+    git commit --no-edit -m "merge: resolucao de conflitos com upstream/!CURRENT_BRANCH!"
     if %ERRORLEVEL% equ 0 (
         echo [SUCESSO] Merge finalizado e comitado com sucesso!
     ) else (
@@ -459,11 +583,218 @@ echo.
 goto END_OP
 
 :: ===============================================================================
+:: OPCAO 9: GUIA PRATICO - QUANDO USAR CADA OPCAO?
+:: ===============================================================================
+:OP_HELP
+cls
+echo ===============================================================================
+echo            GUIA PRATICO: QUANDO USAR CADA OPCAO NO DIA A DIA?
+echo ===============================================================================
+echo.
+echo  [OPCAO 1] SALVAR E ENVIAR TUDO (Commit + Push para seu Origin)
+echo  -----------------------------------------------------------------------------
+echo  QUANDO USAR:
+echo   * Voce fez melhorias, criou telas ou alterou regras e quer fazer um BACKUP
+echo     seguro no seu GitHub privado.
+echo   * Voce AINDA NAO quer baixar atualizacoes do PDL PRO oficial porque esta
+echo     no meio de um teste e nao quer novidades externas interferindo agora.
+echo.
+echo  [OPCAO 2] PUXAR ATUALIZACOES OFICIAIS (Fetch + Merge Upstream)
+echo  -----------------------------------------------------------------------------
+echo  QUANDO USAR:
+echo   * O PDL PRO oficial lancou correcoes de bugs ou melhorias novas e voce quer
+echo     apenas testar essas novidades no seu computador ANTES de decidir se vai
+echo     subir para o seu GitHub privado.
+echo.
+echo  [OPCAO 3] SINCRONIZACAO COMPLETA (O "BOTAO MAGICO" RECOMENDADO!)
+echo  -----------------------------------------------------------------------------
+echo  QUANDO USAR:
+echo   * No inicio do dia ou ao finalizar uma funcionalidade importante.
+echo   * Ela faz os 3 passos automaticamente:
+echo     1. Salva tudo o que voce fez (garante que nada seu seja perdido).
+echo     2. Baixa e mescla as novidades do PDL PRO oficial.
+echo     3. Sobe o codigo integrado e 100%% atualizado para seu GitHub privado.
+echo.
+echo  [OPCAO 5] GIT STASH (GUARDAR NA GAVETA)
+echo  -----------------------------------------------------------------------------
+echo  QUANDO USAR:
+echo   * Voce estava rascunhando um codigo que ainda nao funciona, mas precisa
+echo     limpar o projeto rapidamente para testar outra coisa sem perder o rascunho.
+echo.
+echo  [OPCAO 6] RESOLVER / CANCELAR CONFLITO DE MERGE
+echo  -----------------------------------------------------------------------------
+echo  QUANDO USAR:
+echo   * Se voce e o repositorio oficial alteraram exatamente a mesma linha de um
+echo     mesmo arquivo e o Git pausou o merge pedindo decisao.
+echo   * Voce pode usar esta opcao para desfazer o merge (voltar ao normal) ou
+echo     concluir apos revisar os arquivos.
+echo.
+echo  =============================================================================
+echo  DICA DE OURO PARA CONFLITO ZERO:
+echo  =============================================================================
+echo  * Crie suas customizacoes em pastas de extensao:
+echo    - Backend:  backend/extensions/^<seu_nome^>/
+echo    - Frontend: frontend/src/extensions/^<seu_nome^>/
+echo  * Assim, o repositorio oficial NUNCA vai mexer nas suas pastas e o merge
+echo    da Opcao [3] acontecera 100%% liso e sem nenhum conflito!
+goto END_OP
+
+:: ===============================================================================
+:: OPCAO 10: PUXAR DO REPOSITORIO CUSTOM (ORIGIN -> LOCAL)
+:: ===============================================================================
+:OP_PULL_ORIGIN
+cls
+echo ===============================================================================
+echo  [10] PUXAR ATUALIZACOES DO SEU REPOSITORIO CUSTOM (origin -^> local)
+echo ===============================================================================
+echo  Destino: github.com/jacksonfelipe/pdlpro-custom  ^| Branch: !CURRENT_BRANCH!
+echo  Util quando: voce subiu mudancas pelo VPS ou outro PC e quer trazer para ca.
+echo  GARANTIA: suas alteracoes locais serao preservadas antes de qualquer merge.
+echo ===============================================================================
+echo.
+
+call :VALIDATE_ORIGIN
+if !ERRORLEVEL! neq 0 goto END_OP
+
+:: --- Verifica se ha alteracoes locais nao salvas ---
+git status --porcelain > "%temp%\git_pdl_dirty2.txt"
+set IS_DIRTY2=0
+for %%A in ("%temp%\git_pdl_dirty2.txt") do if %%~zA gtr 0 set IS_DIRTY2=1
+del "%temp%\git_pdl_dirty2.txt" >nul 2>&1
+
+if !IS_DIRTY2! equ 1 (
+    echo [AVISO] Voce possui alteracoes locais nao salvas:
+    echo.
+    git status -s
+    echo.
+    echo ============================================================================
+    echo  Como voce quer PRESERVAR suas alteracoes antes de puxar do repositorio?
+    echo ============================================================================
+    echo.
+    echo  [S] SALVAR em commit agora e mesclar depois ^(RECOMENDADO - nada se perde^)
+    echo      Cria um commit com suas mudancas, pega o que veio do origin e mescla.
+    echo      Resultado final: seu trabalho + o que veio do origin, tudo junto.
+    echo.
+    echo  [G] GUARDAR no Stash ^(temporario^) e restaurar apos o pull
+    echo      Esconde suas mudancas, puxa do origin, e devolve suas mudancas depois.
+    echo      Util para testar o que veio sem commitar ainda.
+    echo.
+    echo  [A] ABORTAR ^(nao faz nada, volta ao menu^)
+    echo.
+    set DIRTY_CHOICE=S
+    set /p DIRTY_CHOICE="Escolha [S/G/A] (ENTER = S - Salvar e mesclar): "
+    if "!DIRTY_CHOICE!"=="" set DIRTY_CHOICE=S
+
+    if /i "!DIRTY_CHOICE!"=="S" (
+        echo.
+        set LOCAL_SAVE_MSG=
+        set /p LOCAL_SAVE_MSG="Mensagem para salvar seu trabalho local (ENTER para usar a padrao): "
+        if "!LOCAL_SAVE_MSG!"=="" set LOCAL_SAVE_MSG=chore: preservando trabalho local antes de puxar do origin
+        echo.
+        echo [1/4] Salvando suas alteracoes locais em commit...
+        git add .
+        git commit -m "!LOCAL_SAVE_MSG!"
+        if !ERRORLEVEL! equ 0 (
+            echo [OK] Suas alteracoes foram salvas com seguranca.
+        ) else (
+            echo [INFO] Nenhuma alteracao nova para commitar. Continuando...
+        )
+    ) else if /i "!DIRTY_CHOICE!"=="G" (
+        echo.
+        echo [1/4] Guardando suas alteracoes no Stash...
+        git stash push -u -m "Stash automatico antes de pull do origin em !date! !time:~0,5!"
+        if !ERRORLEVEL! equ 0 (
+            echo [OK] Alteracoes guardadas. Serao restauradas apos o pull.
+            set STASH_SAVED=1
+        ) else (
+            echo [ERRO] Nao foi possivel guardar no stash.
+            goto END_OP
+        )
+    ) else if /i "!DIRTY_CHOICE!"=="A" (
+        echo Operacao cancelada. Suas alteracoes nao foram tocadas.
+        goto END_OP
+    )
+    echo.
+) else (
+    echo [OK] Workspace limpo. Nenhuma alteracao local pendente.
+    echo.
+)
+
+echo [2/4] Buscando atualizacoes do seu repositorio custom (git fetch origin)...
+git fetch origin
+if !ERRORLEVEL! neq 0 (
+    echo [ERRO] Nao foi possivel conectar ao origin. Verifique conexao ou autenticacao.
+    goto END_OP
+)
+
+echo.
+echo  Novidades que virao do origin/!CURRENT_BRANCH!:
+git log --oneline HEAD..origin/!CURRENT_BRANCH! 2>nul
+for /f %%C in ('git rev-list --count HEAD..origin/!CURRENT_BRANCH! 2^>nul') do set INCOMING=%%C
+if "!INCOMING!"=="0" (
+    echo  (Nenhum commit novo no origin. Seu local ja esta atualizado!)
+    if defined STASH_SAVED if "!STASH_SAVED!"=="1" (
+        echo.
+        echo [3/4] Restaurando seu trabalho do Stash...
+        git stash pop
+        echo [OK] Seu trabalho foi restaurado com sucesso.
+    )
+    goto END_OP
+)
+echo.
+
+echo [3/4] Aplicando atualizacoes do origin (git merge --no-edit)...
+git merge --no-edit origin/!CURRENT_BRANCH!
+if !ERRORLEVEL! neq 0 (
+    echo.
+    echo ============================================================================
+    echo  [ATENCAO: CONFLITO DETECTADO!]
+    echo ============================================================================
+    echo  Arquivos em conflito:
+    git status -s | findstr /R "^UU ^AA ^UD ^DU"
+    echo.
+    echo  O que fazer:
+    echo  1. Abra os arquivos listados acima no seu editor.
+    echo  2. Procure por marcadores ^<^<^<^<^<^<^< e resolva as diferencas.
+    echo  3. Apos resolver, use a Opcao [6] deste menu para finalizar o merge.
+    echo ============================================================================
+    goto END_OP
+)
+
+:: --- Se usou stash, restaura agora ---
+if defined STASH_SAVED if "!STASH_SAVED!"=="1" (
+    echo.
+    echo [4/4] Restaurando seu trabalho que estava no Stash...
+    git stash pop
+    if !ERRORLEVEL! neq 0 (
+        echo.
+        echo [AVISO] Conflito ao restaurar o Stash com o que veio do origin.
+        echo  Seus arquivos do stash estao preservados. Use 'git stash list' para ver.
+        echo  Resolva os conflitos manualmente e faca 'git stash drop' para limpar.
+    ) else (
+        echo [OK] Seu trabalho local foi restaurado e mesclado com sucesso.
+    )
+)
+
+echo.
+echo ============================================================================
+echo  [SUCESSO!] Sua maquina local esta 100%% atualizada:
+echo  - O que veio de: github.com/jacksonfelipe/pdlpro-custom
+echo  - Suas alteracoes locais foram preservadas e mescladas
+echo  Branch: !CURRENT_BRANCH!
+echo ============================================================================
+goto END_OP
+
+
+:: ===============================================================================
 :: FUNCOES AUXILIARES
 :: ===============================================================================
 :VALIDATE_ORIGIN
-git remote | findstr /X "origin" >nul
-if %ERRORLEVEL% neq 0 (
+set _FOUND_ORIGIN=0
+for /f "delims=" %%R in ('git remote 2^>nul') do (
+    if /i "%%R"=="origin" set _FOUND_ORIGIN=1
+)
+if !_FOUND_ORIGIN! equ 0 (
     echo [ERRO] O remoto 'origin' nao esta configurado!
     echo Execute a opcao [7] do menu para registrar o link do seu repositorio.
     exit /b 1
@@ -471,8 +802,11 @@ if %ERRORLEVEL% neq 0 (
 exit /b 0
 
 :VALIDATE_UPSTREAM
-git remote | findstr /X "upstream" >nul
-if %ERRORLEVEL% neq 0 (
+set _FOUND_UPSTREAM=0
+for /f "delims=" %%R in ('git remote 2^>nul') do (
+    if /i "%%R"=="upstream" set _FOUND_UPSTREAM=1
+)
+if !_FOUND_UPSTREAM! equ 0 (
     echo [ERRO] O remoto 'upstream' nao esta configurado!
     echo Configurando upstream automaticamente agora para https://github.com/D3NKYT0/pdlpro.git...
     git remote add upstream https://github.com/D3NKYT0/pdlpro.git

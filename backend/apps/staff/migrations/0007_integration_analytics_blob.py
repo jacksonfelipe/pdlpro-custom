@@ -1,4 +1,4 @@
-# Generated for PDL PRO
+# Generated for Dimes
 
 from django.db import migrations, models
 

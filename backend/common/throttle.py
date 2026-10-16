@@ -1,4 +1,4 @@
-"""Classes de rate limiting e throttle para o PDL PRO."""
+"""Classes de rate limiting e throttle para o Dimes."""
 
 from __future__ import annotations
 

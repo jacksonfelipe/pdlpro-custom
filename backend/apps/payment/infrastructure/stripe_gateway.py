@@ -60,7 +60,7 @@ class StripeGateway(IPaymentGateway):
             cents = int((order.amount * 100).quantize(Decimal(1)))
             if getattr(settings, "STRIPE_CHECKOUT_MODE", "embedded") == "redirect":
                 metadata = {"order_id": str(order.id), "user_id": str(order.user_id), "coins": str(order.coins)}
-                description = payment_description(getattr(settings, "STRIPE_PAYMENT_DESCRIPTION", ""), order, default=f"PDL PRO — {order.coins} {coin_display_name()}", coin_name=coin_display_name())
+                description = payment_description(getattr(settings, "STRIPE_PAYMENT_DESCRIPTION", ""), order, default=f"Dimes — {order.coins} {coin_display_name()}", coin_name=coin_display_name())
                 session = stripe.checkout.Session.create(
                     mode="payment", success_url=checkout_return_url(order.id), cancel_url=checkout_return_url(order.id),
                     client_reference_id=str(order.id), metadata=metadata,
@@ -81,7 +81,7 @@ class StripeGateway(IPaymentGateway):
                 },
                 automatic_payment_methods={"enabled": True},
                 description=payment_description(
-                    getattr(settings, "STRIPE_PAYMENT_DESCRIPTION", ""), order, default=f"PDL PRO — {order.coins} {coin_display_name()}", coin_name=coin_display_name(),
+                    getattr(settings, "STRIPE_PAYMENT_DESCRIPTION", ""), order, default=f"Dimes — {order.coins} {coin_display_name()}", coin_name=coin_display_name(),
                 ),
             )
         except Exception as exc:

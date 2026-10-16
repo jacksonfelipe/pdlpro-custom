@@ -359,7 +359,7 @@ class DjangoIntegrationProbe(IIntegrationProbe):
 
         try:
             sent = send_mail(
-                subject=_("PDL PRO — teste SMTP"),
+                subject=_("Dimes — teste SMTP"),
                 message=_("Este é um e-mail de teste do configurador de integrações."),
                 from_email=from_email,
                 recipient_list=[to_email],

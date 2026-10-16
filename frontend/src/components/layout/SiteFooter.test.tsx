@@ -44,7 +44,7 @@ it('apresenta marca, navegação útil e documentos legais sem atalhos decorativ
   const { container } = mount()
 
   expect(screen.getByRole('contentinfo')).toBeVisible()
-  expect(screen.getByRole('link', { name: 'PDL PRO — Início' })).toHaveAttribute('href', '/')
+  expect(screen.getByRole('link', { name: 'Dimes — Início' })).toHaveAttribute('href', '/')
   expect(container.querySelector('.site-footer-mark')).toHaveAttribute('src', '/theme/default/images/pdl-symbol.svg')
 
   expect(screen.getByRole('navigation', { name: 'Explorar o site' })).toBeVisible()
@@ -65,7 +65,7 @@ it('apresenta marca, navegação útil e documentos legais sem atalhos decorativ
     expect(column.querySelectorAll(':scope > ul > li > a').length).toBeGreaterThan(0)
   })
 
-  expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()} PDL PRO`))).toBeVisible()
+  expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()} Dimes`))).toBeVisible()
   expect(screen.getByText('Português')).toBeVisible()
   expect(screen.queryByRole('link', { name: 'Comunidade' })).not.toBeInTheDocument()
   expect(screen.queryByText(/Feito com/i)).not.toBeInTheDocument()
@@ -98,7 +98,7 @@ it('leva marca e Início para /home durante o Coming Soon quando há sessão', (
 
   mount()
 
-  expect(screen.getByRole('link', { name: 'PDL PRO — Início' })).toHaveAttribute('href', '/home')
+  expect(screen.getByRole('link', { name: 'Dimes — Início' })).toHaveAttribute('href', '/home')
   expect(screen.getByRole('link', { name: 'Início' })).toHaveAttribute('href', '/home')
 })
 
@@ -108,7 +108,7 @@ it('leva marca e Início para /home para visitante durante o Coming Soon', () =>
   mount()
 
   expect(screen.getByRole('link', { name: 'Início' })).toHaveAttribute('href', '/home')
-  expect(screen.getByRole('link', { name: 'PDL PRO — Início' })).toHaveAttribute('href', '/home')
+  expect(screen.getByRole('link', { name: 'Dimes — Início' })).toHaveAttribute('href', '/home')
 })
 
 it('oculta links de conteúdo pausados no rodapé', () => {

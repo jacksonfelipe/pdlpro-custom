@@ -1,4 +1,4 @@
-"""Custom drf-spectacular AutoSchema for the PDL PRO API."""
+"""Custom drf-spectacular AutoSchema for the Dimes API."""
 
 from __future__ import annotations
 

@@ -1,0 +1,7 @@
+{
+    email contato@l2jpremium.com
+}
+
+l2dimes.com, www.l2dimes.com {
+    reverse_proxy web:80
+}

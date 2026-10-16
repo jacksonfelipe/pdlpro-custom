@@ -55,7 +55,7 @@ class RequestEmailVerificationUseCase(UseCase[UUID, dict]):
         _activate_user_language(user)
         self._mailer.send(
             user.email,
-            _("Confirme seu e-mail no PDL PRO"),
+            _("Confirme seu e-mail no Dimes"),
             _(
                 "Olá, %(username)s.\n\n"
                 "Confirme seu e-mail neste link (válido por 48h):\n%(link)s\n"
@@ -139,7 +139,7 @@ class RequestPasswordResetUseCase(UseCase[RequestPasswordResetInput, dict]):
         _activate_user_language(user)
         self._mailer.send(
             user.email,
-            _("Redefinir senha do PDL PRO"),
+            _("Redefinir senha do Dimes"),
             _(
                 "Olá, %(username)s.\n\n"
                 "Redefina sua senha neste link (válido por 1 hora):\n%(link)s\n"

@@ -8,7 +8,7 @@ DOCUMENTS_ES: dict[str, dict[str, str]] = {
 <strong>{trade_name}</strong> (“<strong>Panel</strong>”, “<strong>Servicio</strong>”), operado por
 <strong>{controller_name}</strong>, CNPJ <strong>{cnpj}</strong>, con domicilio en
 <strong>{address}</strong> y contacto <a href="{contact_mailto}">{contact_email}</a>.
-El software base puede ofrecerse bajo la marca PDL PRO; el <strong>controlador de datos y operador
+El software base puede ofrecerse bajo la marca Dimes; el <strong>controlador de datos y operador
 del servidor Lineage 2</strong> de este despliegue es {controller_name}.</p>
 <p>Al crear una cuenta, acceder o usar cualquier recurso del Servicio, usted (“<strong>Usuario</strong>”)
 declara haber leído y aceptado estos Términos, la <a href="/privacy">Política de privacidad</a> y el
@@ -54,7 +54,7 @@ forma irreversible. Reporte fallos técnicos al soporte.</p>
 
 <h2>6. Propiedad intelectual</h2>
 <p>Marcas, diseño, código y contenido editorial del Panel pertenecen a {controller_name} o a sus
-licenciantes (incluido el ecosistema PDL PRO cuando aplique). Lineage 2 pertenece a sus titulares.
+licenciantes (incluido el ecosistema Dimes cuando aplique). Lineage 2 pertenece a sus titulares.
 Solo se concede una licencia personal limitada de uso del Servicio.</p>
 
 <h2>7. Suspensión y cierre</h2>
@@ -83,7 +83,7 @@ limita a lo pagado al operador en los últimos <strong>12 meses</strong>, salvo 
 <p><strong>{controller_name}</strong> (“nosotros”) trata datos personales en el panel
 <strong>{trade_name}</strong> conforme a la LGPD brasileña (Ley 13.709/2018). Esta Política explica
 qué recopilamos, para qué, con quién compartimos y cuáles son sus derechos.</p>
-<p>El software PDL PRO puede ser usado por distintos operadores. En este despliegue, el
+<p>El software Dimes puede ser usado por distintos operadores. En este despliegue, el
 <strong>controlador</strong> es {controller_name} (CNPJ {cnpj}).</p>
 
 <h2>1. Controlador y DPO</h2>

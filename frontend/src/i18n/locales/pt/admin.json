@@ -1159,7 +1159,7 @@
       "descriptionHint": "Texto enviado ao provedor nas novas cobranças. Deixe vazio para usar a descrição padrão.",
       "variablesHelp": "Ajuda sobre variáveis — {{provider}}",
       "variablesHint": "Use {quantidade} para a quantidade comprada, {pacote} para o código do pacote e {moeda} para o nome atual da moeda virtual. Exemplo: {quantidade} {moeda} — {pacote}. As variáveis são substituídas nas novas cobranças dos dois provedores. Variáveis desconhecidas permanecem literais. Deixe vazio para usar o padrão.",
-      "stripeDescriptionPlaceholder": "PDL PRO — {quantidade} {{coinName}}",
+      "stripeDescriptionPlaceholder": "Dimes — {quantidade} {{coinName}}",
       "mpDescriptionPlaceholder": "{{coinNameTitle}} PDL ({pacote})",
       "stripePresentmentHint": "Moedas de cobrança suportadas no Stripe, separadas por vírgula. Ex.: BRL, USD, EUR",
       "coinNameHint": "Até 40 caracteres. Ex.: Blablabla Coin. Usado em saldos, preços, recargas e transferências. Vazio usa o nome do idioma ativo.",

@@ -86,7 +86,7 @@ def test_swagger_ui_uses_pdl_theme():
     assert 'id="pdl-docs-loader"' in body
     assert "pdl_admin/js/docs-loader.js" in body
     assert "Carregando documentação" in body or "Loading documentation" in body
-    assert "PDL PRO" in body
+    assert "Dimes" in body
     assert "Documentação da API" in body
 
 
@@ -100,7 +100,7 @@ def test_redoc_uses_pdl_theme():
     assert "pdl-docs-topbar" in body
     assert 'id="pdl-docs-loader"' in body
     assert "pdl_admin/js/docs-loader.js" in body
-    assert "PDL PRO" in body
+    assert "Dimes" in body
     assert 'aria-current="page"' in body
 
 

@@ -1,4 +1,4 @@
-"""OpenAPI helpers for the PDL PRO API."""
+"""OpenAPI helpers for the Dimes API."""
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ from typing import Any
 
 from django.utils.translation import gettext_lazy as _
 
-OPENAPI_TITLE = "PDL PRO API"
+OPENAPI_TITLE = "Dimes API"
 
 # Keep leading/trailing newlines: msgid must match locale/*.po exactly (no .strip()).
 OPENAPI_DESCRIPTION = _(
     """
-API REST do **PDL PRO** (Painel Definitivo Lineage 2.0).
+API REST do **Dimes** (Painel Definitivo Lineage 2.0).
 
 Backend somente API. O frontend React consome estes contratos.
 

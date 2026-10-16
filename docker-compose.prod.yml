@@ -9,6 +9,8 @@ volumes:
   media_files:
   # Arquivos que nunca são publicados como estático (pacote de portabilidade LGPD).
   private_files:
+  caddy_data:
+  caddy_config:
 
 x-backend-app-image: &backend-app-image
   image: ${PDL_BACKEND_IMAGE:-pdl_backend:local}
@@ -164,8 +166,8 @@ services:
         VITE_TIKTOK_PIXEL_ID: ${VITE_TIKTOK_PIXEL_ID:-}
     restart: unless-stopped
     logging: *default-logging
-    ports:
-      - "${APP_BIND_ADDRESS:-0.0.0.0}:${APP_HTTP_PORT:-8080}:80"
+    expose:
+      - "80"
     volumes:
       - static_files:/var/www/static:ro
       - media_files:/var/www/media:ro
@@ -174,3 +176,18 @@ services:
       - asgi
     networks:
       - pdl_net
+
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - pdl_net
+    depends_on:
+      - web

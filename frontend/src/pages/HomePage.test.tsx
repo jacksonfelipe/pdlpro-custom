@@ -39,7 +39,7 @@ beforeEach(async () => {
   vi.mocked(serverApi.status).mockResolvedValue({ players_online: 12, game_online: true, login_online: true } as never)
   vi.mocked(serverApi.rankings).mockResolvedValue([{ position: 1, name: 'Dawn', value: 9800 }])
   vi.mocked(serverApi.info).mockResolvedValue({
-    name: 'PDL PRO',
+    name: 'Dimes',
     description: '',
     site_name_customized: false,
   } as never)
@@ -242,7 +242,7 @@ it('no tema builtin usa o copy de marketing traduzível, não o nome do pacote',
     presentation: null,
     builtin: true,
     name: 'PDL Classic',
-    description: 'Visual clássico do PDL PRO — Aden, tipografia e a identidade original.',
+    description: 'Visual clássico do Dimes — Aden, tipografia e a identidade original.',
   } as never)
 
   mount()

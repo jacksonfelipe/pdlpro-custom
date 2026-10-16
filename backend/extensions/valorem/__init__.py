@@ -1,1 +1,1 @@
-"""Extensão Valorem para o PDL PRO."""
+"""Extensão Valorem para o Dimes."""
