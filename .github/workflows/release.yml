@@ -98,7 +98,7 @@ jobs:
             ${{ steps.meta.outputs.backend }}:${{ steps.meta.outputs.version }}
             ${{ steps.meta.outputs.backend }}:latest
           labels: |
-            org.opencontainers.image.title=PDL PRO backend
+            org.opencontainers.image.title=DIMES backend
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -117,7 +117,7 @@ jobs:
             ${{ steps.meta.outputs.web }}:${{ steps.meta.outputs.version }}
             ${{ steps.meta.outputs.web }}:latest
           labels: |
-            org.opencontainers.image.title=PDL PRO web
+            org.opencontainers.image.title=DIMES web
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -139,7 +139,7 @@ jobs:
         run: |
           notes="$(mktemp)"
           cat > "$notes" <<EOF
-          PDL PRO ${{ steps.meta.outputs.version }}
+          DIMES ${{ steps.meta.outputs.version }}
 
           Instale com Docker (Linux ou Windows + Docker Desktop):
 
@@ -169,7 +169,7 @@ jobs:
               dist/pdl-pro-${{ steps.meta.outputs.version }}.zip.sha256 \
               dist/install.sh \
               dist/install.ps1 \
-              --title "PDL PRO ${{ steps.meta.outputs.version }}" \
+              --title "DIMES ${{ steps.meta.outputs.version }}" \
               --notes-file "$notes" \
               --latest
           fi

@@ -1,4 +1,4 @@
-"""Empacota a release publicada do PDL PRO (ZIP + nomes de imagem + URLs)."""
+"""Empacota a release publicada do DIMES (ZIP + nomes de imagem + URLs)."""
 
 from __future__ import annotations
 
@@ -244,7 +244,7 @@ def _print_json(payload: dict[str, str]) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Empacota e descreve a release do PDL PRO.")
+    parser = argparse.ArgumentParser(description="Empacota e descreve a release do DIMES.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     pack = sub.add_parser("pack", help="Gera o ZIP da release e o checksum SHA-256")

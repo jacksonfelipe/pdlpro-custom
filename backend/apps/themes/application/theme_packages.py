@@ -563,7 +563,7 @@ def _published_presentation(theme: Any, manifest: dict) -> dict | None:
 
 DEFAULT_THEME_NAME = "PDL Classic"
 DEFAULT_THEME_DESCRIPTION = (
-    "Visual clássico do Dimes — Aden, tipografia e a identidade original."
+    "Visual clássico do DIMES — Aden, tipografia e a identidade original."
 )
 
 

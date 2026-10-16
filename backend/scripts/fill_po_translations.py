@@ -83,17 +83,17 @@ TRANSLATIONS: dict[str, tuple[str, str]] = {
     "Termos": ("Terms", "Términos"),
     "Metadados": ("Metadata", "Metadatos"),
     "Nova conta": ("New account", "Nueva cuenta"),
-    "Confirme seu e-mail no Dimes": (
-        "Confirm your email on Dimes",
-        "Confirma tu correo en Dimes",
+    "Confirme seu e-mail no DIMES": (
+        "Confirm your email on DIMES",
+        "Confirma tu correo en DIMES",
     ),
     "Olá, %(username)s.\n\nConfirme seu e-mail neste link (válido por 48h):\n%(link)s\n": (
         "Hello, %(username)s.\n\nConfirm your email with this link (valid for 48h):\n%(link)s\n",
         "Hola, %(username)s.\n\nConfirma tu correo con este enlace (válido por 48h):\n%(link)s\n",
     ),
-    "Redefinir senha do Dimes": (
-        "Reset your Dimes password",
-        "Restablecer la contraseña de Dimes",
+    "Redefinir senha do DIMES": (
+        "Reset your DIMES password",
+        "Restablecer la contraseña de DIMES",
     ),
     "Olá, %(username)s.\n\nRedefina sua senha neste link (válido por 1 hora):\n%(link)s\n": (
         "Hello, %(username)s.\n\nReset your password with this link (valid for 1 hour):\n%(link)s\n",
@@ -304,9 +304,9 @@ TRANSLATIONS: dict[str, tuple[str, str]] = {
         "Lineage account linking",
         "Vinculación de cuenta Lineage",
     ),
-    "Clique no link para vincular a conta %(login)s ao Dimes:\n\n%(link)s\n\nO link expira em 1 hora.": (
-        "Click the link to link account %(login)s to Dimes:\n\n%(link)s\n\nThe link expires in 1 hour.",
-        "Haz clic en el enlace para vincular la cuenta %(login)s a Dimes:\n\n%(link)s\n\nEl enlace caduca en 1 hora.",
+    "Clique no link para vincular a conta %(login)s ao DIMES:\n\n%(link)s\n\nO link expira em 1 hora.": (
+        "Click the link to link account %(login)s to DIMES:\n\n%(link)s\n\nThe link expires in 1 hour.",
+        "Haz clic en el enlace para vincular la cuenta %(login)s a DIMES:\n\n%(link)s\n\nEl enlace caduca en 1 hora.",
     ),
     "Servidor Lineage": ("Lineage server", "Servidor Lineage"),
     "Conta Lineage": ("Lineage account", "Cuenta Lineage"),

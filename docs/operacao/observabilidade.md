@@ -4,7 +4,7 @@
 
 > **Atualizado:** 4 de outubro de 2026
 
-O PDL PRO registra eventos operacionais em `stdout`/`stderr`, adequados para coleta pelo Docker,
+O DIMES registra eventos operacionais em `stdout`/`stderr`, adequados para coleta pelo Docker,
 Loki, Elastic, CloudWatch ou pelo agente da plataforma. Em produção cada linha da aplicação e do
 Nginx é JSON; no desenvolvimento o padrão da aplicação é legível para humanos.
 

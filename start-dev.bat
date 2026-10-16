@@ -39,19 +39,19 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Subindo PDL PRO com SQLite local e integracao Lineage definida no .env.
+echo Subindo DIMES com SQLite local e integracao Lineage definida no .env.
 echo API:  http://127.0.0.1:8000
 echo Site: http://localhost:3000
 echo.
 
 if "!START_API!"=="1" (
-  start "PDL PRO API" /D "%~dp0backend" cmd /k run-dev.bat
+  start "DIMES API" /D "%~dp0backend" cmd /k run-dev.bat
 ) else (
   echo Pulando a janela da API.
 )
 
 if "!START_FRONT!"=="1" (
-  start "PDL PRO Front" /D "%~dp0frontend" cmd /k npm run dev
+  start "DIMES Front" /D "%~dp0frontend" cmd /k npm run dev
 ) else (
   echo Pulando a janela do Vite.
 )

@@ -108,7 +108,7 @@ password_file=""
 ftp_password=""
 pasv_min="40000"
 pasv_max="50000"
-banner="PDL PRO launcher"
+banner="DIMES launcher"
 ftps=0
 ftps_cert="/etc/ssl/certs/ssl-cert-snakeoil.pem"
 ftps_key="/etc/ssl/private/ssl-cert-snakeoil.key"
@@ -353,8 +353,8 @@ systemctl restart vsftpd
 systemctl is-active --quiet vsftpd || die "vsftpd não ficou ativo; veja journalctl -u vsftpd"
 
 if command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "Status: active"; then
-  ufw allow 21/tcp comment "PDL PRO FTP"
-  ufw allow "${pasv_min}:${pasv_max}/tcp" comment "PDL PRO FTP passive"
+  ufw allow 21/tcp comment "DIMES FTP"
+  ufw allow "${pasv_min}:${pasv_max}/tcp" comment "DIMES FTP passive"
 fi
 
 if [[ "$setup_http" -eq 1 ]]; then

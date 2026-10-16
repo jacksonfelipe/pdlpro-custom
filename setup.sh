@@ -42,7 +42,7 @@ show_help() {
   local command_name script
 
   cat <<'EOF'
-PDL PRO - utilitário de configuração e operação
+DIMES - utilitário de configuração e operação
 
 Uso:
   ./setup.sh <comando> [argumentos]

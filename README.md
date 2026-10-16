@@ -1,4 +1,4 @@
-<h1 align="center">PDL PRO</h1>
+<h1 align="center">DIMES</h1>
 
 <p align="center"><strong>O painel da sua comunidade Lineage 2.</strong><br>
 Site público, área do jogador e central da equipe em uma aplicação.</p>
@@ -12,7 +12,7 @@ Site público, área do jogador e central da equipe em uma aplicação.</p>
 
 ---
 
-O **PDL PRO 2.0** conecta a gestão do servidor à experiência dos jogadores: contas e personagens, economia, conteúdo, recompensas e atendimento. O backend Django e o frontend React são separados, com uma API versionada e módulos de negócio próprios.
+O **DIMES 2.0** conecta a gestão do servidor à experiência dos jogadores: contas e personagens, economia, conteúdo, recompensas e atendimento. O backend Django e o frontend React são separados, com uma API versionada e módulos de negócio próprios.
 
 > [!IMPORTANT]
 > Em desenvolvimento ativo. Para colocar o painel no ar use a

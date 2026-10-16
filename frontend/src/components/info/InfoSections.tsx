@@ -89,7 +89,7 @@ export function InfoSections({
         <div className="info-overview-grid">
           <article className="info-story-card">
             <span className="info-card-kicker">{t('info.storyKicker')}</span>
-            <h3>{data.name?.trim() || 'Dimes'}</h3>
+            <h3>{data.name?.trim() || 'DIMES'}</h3>
             <p>{data.description || t('info.descriptionFallback')}</p>
             <div className="info-story-line">
               <span />

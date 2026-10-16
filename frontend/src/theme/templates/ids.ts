@@ -20,6 +20,7 @@ export const THEME_CATALOG_IDS = [
   'eventide',
   'wayfarer',
   'watchfire',
+  'hallowverde',
 ] as const
 
 export const THEME_RENDERER_ALIASES = {

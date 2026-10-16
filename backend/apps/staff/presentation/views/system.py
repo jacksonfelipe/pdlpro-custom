@@ -42,4 +42,4 @@ class VersionView(APIView):
         description=gettext_lazy("Disponibiliza os metadados de versão do sistema."),
     )
     def get(self, request):
-        return Response({"product": "Dimes", "api_version": API_VERSION})
+        return Response({"product": "DIMES", "api_version": API_VERSION})

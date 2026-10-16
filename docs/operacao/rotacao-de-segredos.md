@@ -4,7 +4,7 @@
 
 > **Atualizado:** 25 de setembro de 2026
 
-O PDL PRO combina soft-rotate do Django (`SECRET_KEY_FALLBACKS`), MultiFernet para
+O DIMES combina soft-rotate do Django (`SECRET_KEY_FALLBACKS`), MultiFernet para
 dados em repouso, jobs auditáveis no painel e manutenção via Celery Beat.
 
 ## Soft-rotate da SECRET_KEY

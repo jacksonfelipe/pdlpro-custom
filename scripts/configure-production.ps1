@@ -13,7 +13,7 @@ $ProgressPreference = 'SilentlyContinue'
 
 function Show-Help {
     @'
-Configura o .env de producao do PDL PRO (Windows).
+Configura o .env de producao do DIMES (Windows).
 
 Uso:
   .\scripts\configure-production.ps1 -Domain seudominio.com -Yes

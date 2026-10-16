@@ -185,7 +185,7 @@ todos os indicadores de uma área estão ocultos, a área vazia também é remov
 Os testes cobrem migração e preservação de preferências, reversão isolada,
 autorização, entradas inválidas, traduções EN/ES, alteração independente dos dois
 controles, bloqueio de envio repetido e falha de gravação. A interação do painel,
-landing e Club e os 20 templates do catálogo verificam a omissão dos indicadores.
+landing e Club e os 21 templates do catálogo verificam a omissão dos indicadores.
 
 ### Herança e atualização
 

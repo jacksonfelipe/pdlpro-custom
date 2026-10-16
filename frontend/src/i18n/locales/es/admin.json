@@ -1265,7 +1265,7 @@
       "descriptionHint": "Texto enviado al proveedor en los nuevos cobros. Deje vacío para usar la descripción predeterminada.",
       "variablesHelp": "Ayuda sobre variables — {{provider}}",
       "variablesHint": "Usa {quantidade} para la cantidad comprada, {pacote} para el código del paquete y {moeda} para el nombre actual de la moneda virtual. Ejemplo: {quantidade} {moeda} — {pacote}. Las variables se sustituyen en los nuevos cobros de ambos proveedores. Las variables desconocidas permanecen literales. Deja vacío para usar el valor predeterminado.",
-      "stripeDescriptionPlaceholder": "Dimes — {quantidade} {{coinName}}",
+      "stripeDescriptionPlaceholder": "DIMES — {quantidade} {{coinName}}",
       "mpDescriptionPlaceholder": "{{coinNameTitle}} PDL ({pacote})",
       "stripePresentmentHint": "Monedas de cobro admitidas en Stripe, separadas por coma. Ej.: BRL, USD, EUR",
       "coinNameHint": "Hasta 40 caracteres. Ej.: Blablabla Coin. Se usa en saldos, precios, recargas y transferencias. Vacío usa el nombre del idioma activo.",
@@ -1511,7 +1511,7 @@
       "files": "Archivos en la raíz: <c>theme.json</c>, <c>theme.css</c>, <c>metadados.json</c> y carpeta <c>locales/</c> opcionales, carpetas <c>images/</c> y <c>fonts/</c>",
       "accepted": "Aceptados: CSS, imágenes, fuentes locales, <c>metadados.json</c> y <c>locales/{pt,en,es}.json</c> apuntados por <c>theme.json</c>",
       "blocked": "Bloqueados: scripts, HTML ejecutable, Markdown y path traversal",
-      "renderer": "Catálogo de 20 layouts (Vesperlyn, Ironspine, Warhorn…) o aliases <c>portal-v1</c> y <c>club-v1</c>",
+      "renderer": "Catálogo de 21 layouts (Vesperlyn, Hallow Verde, Ironspine, Warhorn…) o aliases <c>portal-v1</c> y <c>club-v1</c>",
       "activation": "Instalar ≠ activar: actívalo en el catálogo después de la validación"
     },
     "catalogEyebrow": "Catálogo",

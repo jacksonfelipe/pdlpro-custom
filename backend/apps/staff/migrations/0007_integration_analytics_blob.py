@@ -1,4 +1,4 @@
-# Generated for Dimes
+# Generated for DIMES
 
 from django.db import migrations, models
 

@@ -1,4 +1,4 @@
-"""Django settings base — Dimes."""
+"""Django settings base — DIMES."""
 
 import sys
 from datetime import timedelta
@@ -69,7 +69,7 @@ SITE_ID = env.int("SITE_ID", default=1)
 AUTH_USER_MODEL = "accounts.User"
 LEGAL_DOCS_VERSION = env("LEGAL_DOCS_VERSION", default="2026-09-10")
 LEGAL_CONTROLLER_NAME = env("LEGAL_CONTROLLER_NAME", default="Operador do servidor")
-LEGAL_TRADE_NAME = env("LEGAL_TRADE_NAME", default="Dimes")
+LEGAL_TRADE_NAME = env("LEGAL_TRADE_NAME", default="DIMES")
 LEGAL_CNPJ = env("LEGAL_CNPJ", default="00.000.000/0000-00")
 LEGAL_ADDRESS = env("LEGAL_ADDRESS", default="Brasil")
 LEGAL_CONTACT_EMAIL = env("LEGAL_CONTACT_EMAIL", default="contato@example.com")
@@ -227,7 +227,7 @@ CONTENT_SECURITY_POLICY_HTML = build_content_security_policy(script_unsafe_inlin
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS_PDL
 JAZZMIN_UI_TWEAKS = JAZZMIN_UI_TWEAKS_PDL
 
-PROJECT_TITLE = env("PROJECT_TITLE", default="Dimes")
+PROJECT_TITLE = env("PROJECT_TITLE", default="DIMES")
 PROJECT_DESCRIPTION = env("PROJECT_DESCRIPTION", default="Painel Definitivo Lineage 2.0")
 SITE_SEO_TITLE = env("SITE_SEO_TITLE", default="")
 SITE_SEO_DESCRIPTION = env("SITE_SEO_DESCRIPTION", default="")
@@ -268,7 +268,7 @@ VITE_GTM_ID = env("VITE_GTM_ID", default=env("GTM_ID", default=""))
 VITE_META_PIXEL_ID = env("VITE_META_PIXEL_ID", default=env("META_PIXEL_ID", default=""))
 VITE_TIKTOK_PIXEL_ID = env("VITE_TIKTOK_PIXEL_ID", default=env("TIKTOK_PIXEL_ID", default=""))
 WEBAUTHN_RP_ID = env("WEBAUTHN_RP_ID", default="")
-WEBAUTHN_RP_NAME = env("WEBAUTHN_RP_NAME", default="Dimes")
+WEBAUTHN_RP_NAME = env("WEBAUTHN_RP_NAME", default="DIMES")
 WEBAUTHN_ORIGINS = env.list("WEBAUTHN_ORIGINS", default=[])
 HCAPTCHA_SITE_KEY = env("HCAPTCHA_SITE_KEY", default=env("VITE_HCAPTCHA_SITEKEY", default=""))
 HCAPTCHA_SECRET_KEY = env("HCAPTCHA_SECRET_KEY", default="")

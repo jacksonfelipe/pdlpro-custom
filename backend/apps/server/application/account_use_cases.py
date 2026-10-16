@@ -632,7 +632,7 @@ class RequestLinkByEmailUseCase(UseCase[RequestLinkByEmailInput, dict]):
             email,
             _("Vinculação de conta Lineage"),
             _(
-                "Clique no link para vincular a conta %(login)s ao Dimes:\n\n"
+                "Clique no link para vincular a conta %(login)s ao DIMES:\n\n"
                 "%(link)s\n\nO link expira em 1 hora."
             )
             % {"login": account.login, "link": link},

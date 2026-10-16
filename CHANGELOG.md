@@ -1,6 +1,6 @@
 # Histórico de Versões (Changelog)
 
-Este documento descreve a governança de versões, o padrão de registro de alterações e o ciclo de lançamentos do **PDL PRO**.
+Este documento descreve a governança de versões, o padrão de registro de alterações e o ciclo de lançamentos do **DIMES**.
 
 ---
 
@@ -14,7 +14,7 @@ O histórico detalhado, consolidado por versão com todas as alterações do pro
 
 ## Diretrizes de Versionamento
 
-O PDL PRO adota o [Versionamento Semântico 2.0.0 (SemVer)](https://semver.org/lang/pt-BR/), estruturado no formato `MAJOR.MINOR.PATCH`:
+O DIMES adota o [Versionamento Semântico 2.0.0 (SemVer)](https://semver.org/lang/pt-BR/), estruturado no formato `MAJOR.MINOR.PATCH`:
 
 * **MAJOR (`X.0.0`)**: Mudanças incompatíveis com versões anteriores na API pública, quebras de contrato de banco de dados ou reestruturações arquiteturais que exijam intervenção manual na migração.
 * **MINOR (`0.Y.0`)**: Novas funcionalidades, novos subsistemas, suporte a novos dialetos de emuladores ou expansão de portas e serviços, mantendo total retrocompatibilidade.

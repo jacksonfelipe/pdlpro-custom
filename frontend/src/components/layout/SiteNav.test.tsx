@@ -119,11 +119,11 @@ it('exibe a marca configurada no painel admin', () => {
   expect(container.querySelector('.site-brand-copy small')?.textContent).toBe('O Número Um')
 })
 
-it('mantém Dimes quando o nome do servidor ainda não veio', () => {
+it('mantém DIMES quando o nome do servidor ainda não veio', () => {
   const { container } = mount()
 
-  expect(screen.getByRole('link', { name: 'Dimes — Início' })).toBeVisible()
-  expect(container.querySelector('.site-brand-copy strong')?.textContent).toBe('Dimes')
+  expect(screen.getByRole('link', { name: 'DIMES — Início' })).toBeVisible()
+  expect(container.querySelector('.site-brand-copy strong')?.textContent).toBe('DIMES')
   expect(container.querySelector('.site-brand-copy small')?.textContent).toBe('Lineage')
 })
 
@@ -134,7 +134,7 @@ it('aponta Início e marca para /home quando o Coming Soon está ligado e há se
 
   const home = screen.getByRole('link', { name: 'Início' })
   expect(home).toHaveAttribute('href', '/home')
-  expect(screen.getByRole('link', { name: 'Dimes — Início' })).toHaveAttribute('href', '/home')
+  expect(screen.getByRole('link', { name: 'DIMES — Início' })).toHaveAttribute('href', '/home')
 })
 
 it('aponta Início e marca para /home para visitante durante o Coming Soon', () => {
@@ -142,7 +142,7 @@ it('aponta Início e marca para /home para visitante durante o Coming Soon', () 
   mount('/news')
 
   expect(screen.getByRole('link', { name: 'Início' })).toHaveAttribute('href', '/home')
-  expect(screen.getByRole('link', { name: 'Dimes — Início' })).toHaveAttribute('href', '/home')
+  expect(screen.getByRole('link', { name: 'DIMES — Início' })).toHaveAttribute('href', '/home')
 })
 
 it('mantém Início na raiz com o site aberto mesmo autenticado', () => {

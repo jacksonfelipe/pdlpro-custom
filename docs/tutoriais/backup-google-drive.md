@@ -12,7 +12,7 @@ nada**: sem o `rclone` no host, os scripts usam a imagem Docker oficial. Você s
 rclone no **seu computador**, uma vez, para fazer o login no Google.
 
 > [!IMPORTANT]
-> Pré-requisitos: PDL PRO **2.6.4 ou mais novo** instalado pela
+> Pré-requisitos: DIMES **2.6.4 ou mais novo** instalado pela
 > [Release](../operacao/distribuicao.md), acesso SSH ao servidor e uma conta Google com
 > espaço livre. Rode os comandos a partir da pasta da instalação (`/opt/pdlpro`).
 

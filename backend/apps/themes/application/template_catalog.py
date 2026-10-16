@@ -35,6 +35,7 @@ TEMPLATE_SECTIONS: dict[str, tuple[str, ...]] = {
     "eventide": CLASSIC_SECTIONS,
     "wayfarer": CLASSIC_SECTIONS,
     "watchfire": CLASSIC_SECTIONS,
+    "hallowverde": ("hero", "stats", "news", "ranking", "features", "cta"),
 }
 
 SUPPORTED_RENDERERS = tuple(TEMPLATE_SECTIONS) + tuple(RENDERER_ALIASES)

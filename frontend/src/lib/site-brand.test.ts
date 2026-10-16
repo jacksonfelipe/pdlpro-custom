@@ -23,7 +23,7 @@ describe('resolveSiteBrand', () => {
     })
   })
 
-  it('usa Dimes e Lineage sem dados', () => {
+  it('usa DIMES e Lineage sem dados', () => {
     expect(resolveSiteBrand(undefined)).toEqual({
       name: DEFAULT_SITE_BRAND,
       tagline: DEFAULT_SITE_TAGLINE,

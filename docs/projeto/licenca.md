@@ -6,7 +6,7 @@
 
 Copyright © 2026 Daniel Amaral.
 
-O PDL PRO utiliza uma [licença source-available](../../LICENSE):
+O DIMES utiliza uma [licença source-available](../../LICENSE):
 
 - é permitido acessar, baixar e estudar o código;
 - é permitido instalar e usar o PDL em servidor próprio ou administrado pelo usuário;

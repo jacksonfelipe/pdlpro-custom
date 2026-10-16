@@ -1,4 +1,4 @@
-# Visão geral do PDL PRO
+# Visão geral do DIMES
 
 [← Índice](../README.md) · [Fonte única](../projeto/fonte-unica.md) · [Economia](../funcionalidades/economia-jogador.md)
 

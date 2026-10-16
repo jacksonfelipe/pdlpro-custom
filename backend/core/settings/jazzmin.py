@@ -3,11 +3,11 @@ from django.utils.translation import gettext_lazy as _
 from .jazzmin_icons import JAZZMIN_ICONS_PDL
 
 JAZZMIN_SETTINGS_PDL = {
-    "site_title": "Dimes",
-    "site_header": "Dimes Admin",
-    "site_brand": "Dimes",
+    "site_title": "DIMES",
+    "site_header": "DIMES Admin",
+    "site_brand": "DIMES",
     "welcome_sign": _("Acesso ao painel administrativo"),
-    "copyright": "Dimes",
+    "copyright": "DIMES",
     "site_logo": "pdl_admin/img/logo.png",
     "login_logo": "pdl_admin/img/logo.png",
     "login_logo_dark": "pdl_admin/img/logo.png",

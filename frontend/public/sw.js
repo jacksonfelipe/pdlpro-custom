@@ -1,12 +1,12 @@
 self.addEventListener('push', (event) => {
-  let payload = { title: 'PDL PRO', body: 'Você tem uma nova notificação.', url: '/' }
+  let payload = { title: 'DIMES', body: 'Você tem uma nova notificação.', url: '/' }
   try {
     payload = { ...payload, ...event.data.json() }
   } catch {
     if (event.data) payload.body = event.data.text()
   }
   event.waitUntil(
-    self.registration.showNotification(payload.title || 'PDL PRO', {
+    self.registration.showNotification(payload.title || 'DIMES', {
       body: payload.body || '',
       icon: '/favicon/android-chrome-192x192.png',
       badge: '/favicon/favicon-32x32.png',

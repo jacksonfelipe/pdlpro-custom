@@ -1,4 +1,4 @@
-# Arquitetura do PDL PRO
+# Arquitetura do DIMES
 
 [← Índice](../README.md) · [Fonte única](../projeto/fonte-unica.md)
 
@@ -6,7 +6,7 @@
 
 ## Visão geral
 
-O PDL PRO usa uma arquitetura modular em camadas. O backend separa regras de negócio de Django, banco de dados e transporte HTTP; o frontend concentra o acesso à API em serviços próprios.
+O DIMES usa uma arquitetura modular em camadas. O backend separa regras de negócio de Django, banco de dados e transporte HTTP; o frontend concentra o acesso à API em serviços próprios.
 
 ```text
 Browser

@@ -39,7 +39,7 @@ it('a home prefere admin customizado, depois tema, depois o copy padrão', () =>
   expect(adminName.name).toBe('Imperium')
 
   const themeName = resolveHomeIdentity(
-    { name: 'Dimes', description: '', site_name_customized: false } as never,
+    { name: 'DIMES', description: '', site_name_customized: false } as never,
     theme,
     '',
     '',
@@ -49,7 +49,7 @@ it('a home prefere admin customizado, depois tema, depois o copy padrão', () =>
   expect(themeName.name).toBe('Packaged')
 
   const builtin = resolveHomeIdentity(
-    { name: 'Dimes', description: '', site_name_customized: false } as never,
+    { name: 'DIMES', description: '', site_name_customized: false } as never,
     { builtin: true, name: 'PDL Classic', description: 'Classic', metadata: null },
     '',
     '',

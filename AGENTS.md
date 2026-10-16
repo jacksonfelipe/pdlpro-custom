@@ -1,4 +1,4 @@
-# Regras de desenvolvimento do PDL PRO
+# Regras de desenvolvimento do DIMES
 
 ## Arquitetura (obrigatória)
 

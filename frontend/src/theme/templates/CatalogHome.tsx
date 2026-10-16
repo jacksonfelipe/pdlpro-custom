@@ -574,6 +574,43 @@ export function CatalogHomePage({
         {ctaBlock}
       </>
     )
+  } else if (templateId === 'hallowverde') {
+    body = (
+      <div className="tpl-hallow">
+        {has('hero') ? (
+          <section className="tpl-hallow__hero">
+            <ThemeHeroVideo />
+            <div className="tpl-hallow__veil" aria-hidden="true" />
+            <div className="tpl-hallow__copy">
+              {hero.kicker && hero.kicker !== hero.title ? <p className="tpl-kicker">{hero.kicker}</p> : null}
+              <h1>{hero.title}</h1>
+              <p>{hero.description}</p>
+              <div className="tpl-hallow__actions">
+                <ButtonLink size="lg" to={hero.actionTo}>{hero.actionLabel}</ButtonLink>
+                {hero.secondaryLabel && hero.secondaryTo ? (
+                  <ButtonLink size="lg" variant="secondary" to={hero.secondaryTo}>{hero.secondaryLabel}</ButtonLink>
+                ) : null}
+              </div>
+            </div>
+          </section>
+        ) : null}
+        {statsBlock ? <section className="tpl-hallow__stats">{statsBlock}</section> : null}
+        <div className="tpl-hallow__ledger">
+          <section className="tpl-hallow__news">{newsBlock}</section>
+          <section className="tpl-hallow__ranking">
+            <SectionHead kicker={ranking.subtitle} title={ranking.title} />
+            {rankingBlock}
+          </section>
+        </div>
+        {has('features') ? (
+          <section className="tpl-hallow__features">
+            <SectionHead kicker={features.subtitle} title={features.title} />
+            <FeatureCards items={features.items} />
+          </section>
+        ) : null}
+        {ctaBlock}
+      </div>
+    )
   }
 
   return (

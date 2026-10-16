@@ -117,7 +117,7 @@ class SetupTwoFactorUseCase(UseCase[UUID, dict]):
             raise ValidationDomainError("O 2FA já está ativo.")
         secret = pyotp.random_base32()
         self._users.set_totp_secret(data, secret)
-        uri = pyotp.TOTP(secret).provisioning_uri(name=state.username, issuer_name="Dimes")
+        uri = pyotp.TOTP(secret).provisioning_uri(name=state.username, issuer_name="DIMES")
         return {
             "secret": secret,
             "otpauth_url": uri,

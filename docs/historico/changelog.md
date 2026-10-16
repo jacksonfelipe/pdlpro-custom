@@ -2,13 +2,17 @@
 
 [← Índice](../README.md) · [Fonte única](../projeto/fonte-unica.md)
 
-> **Atualizado:** 13 de outubro de 2026
+> **Atualizado:** 16 de outubro de 2026
 
-Todas as mudanças relevantes do PDL PRO serão registradas neste arquivo.
+Todas as mudanças relevantes do DIMES serão registradas neste arquivo.
 
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto usa [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Não publicado]
+
+### Adicionado
+
+- Renderer público **Hallow Verde**: citadela em verde/obsidiana, hero com vídeo temático e fallback estático, status, notícias, ranking e chamadas reaproveitam o contrato seguro de temas sem alterar APIs ou o painel.
 
 ## [2.7.5] - 2026-10-13
 
@@ -111,7 +115,7 @@ Lançamento com micro-recursos, reorganização do controle de disponibilidade, 
 
 ## [2.6.9] - 2026-10-02
 
-Lançamento da versão 2.6.9 do PDL PRO com a Wiki da extensão Valorem, correções no checkout da carteira e atualização de segurança da autenticação JWT.
+Lançamento da versão 2.6.9 do DIMES com a Wiki da extensão Valorem, correções no checkout da carteira e atualização de segurança da autenticação JWT.
 
 ### Adicionado
 
@@ -126,11 +130,11 @@ Lançamento da versão 2.6.9 do PDL PRO com a Wiki da extensão Valorem, correç
 
 ## [2.6.8] - 2026-10-01
 
-Lançamento da versão 2.6.8 do PDL PRO com suporte a moedas dinâmicas de cobrança na carteira, preços de pacotes configuráveis por moeda, resolução inteligente da moeda inicial pelo país da conta, gestão completa com tela dedicada em `/panel/admin/charge-currencies` e apresentações no Stripe.
+Lançamento da versão 2.6.8 do DIMES com suporte a moedas dinâmicas de cobrança na carteira, preços de pacotes configuráveis por moeda, resolução inteligente da moeda inicial pelo país da conta, gestão completa com tela dedicada em `/panel/admin/charge-currencies` e apresentações no Stripe.
 
 ### Adicionado
 
-- **Tela dedicada de Moedas de Cobrança (`/panel/admin/charge-currencies`)**: interface administrativa completa com foco em alta experiência do usuário (UX) e design Dark Fantasy RPG, conjunto exclusivo de ilustrações esmaltadas (Enamel SVGs no padrão conquistas do PDL PRO), simulador de cotação em tempo real bidirecional com chips de valores rápidos, preenchimento com 1 clique (presets de moedas internacionais e latinas), prévia dinâmica do card de moeda, filtros rápidos por status e busca de moedas.
+- **Tela dedicada de Moedas de Cobrança (`/panel/admin/charge-currencies`)**: interface administrativa completa com foco em alta experiência do usuário (UX) e design Dark Fantasy RPG, conjunto exclusivo de ilustrações esmaltadas (Enamel SVGs no padrão conquistas do DIMES), simulador de cotação em tempo real bidirecional com chips de valores rápidos, preenchimento com 1 clique (presets de moedas internacionais e latinas), prévia dinâmica do card de moeda, filtros rápidos por status e busca de moedas.
 - **Moedas de cobrança dinâmicas**: tabela `wallet_charge_currency` e catálogo dinâmico de moedas (`WalletChargeCurrency`), permitindo habilitar e cotar qualquer moeda ISO 4217 com taxa própria de conversão para coins (`coins_per_unit`), mantendo compatibilidade de espelho com BRL e USD legados.
 - **Preços de pacotes por moeda**: suporte a preços independentes por moeda em cada pacote de recarga (`CoinPackagePrice`), com edição dinâmica no painel administrativo (`/panel/admin/coin-packages`) e filtragem inteligente na carteira do jogador para pacotes com preço disponível na moeda ativa.
 - **Gestão de moedas e Stripe Presentment no Admin**: seção "Moedas de Cobrança da Loja" em `/panel/admin/integrations` com listagem, adição, ajuste de taxa (`coins_per_unit`) e ativação/desativação, além da configuração de `STRIPE_PRESENTMENT_CURRENCIES` para limitar moedas ofertadas no Stripe. Proteção contra desativação ou exclusão da moeda de liquidação.
@@ -165,7 +169,7 @@ Lançamento da versão 2.6.8 do PDL PRO com suporte a moedas dinâmicas de cobra
 
 ## [2.6.7] - 2026-09-30
 
-Lançamento da versão 2.6.7 do PDL PRO com a escolha do método de recarga em BRL, as opções do checkout Mercado Pago, a recarga em reais pelo Stripe e o gerenciamento da conta do jogo.
+Lançamento da versão 2.6.7 do DIMES com a escolha do método de recarga em BRL, as opções do checkout Mercado Pago, a recarga em reais pelo Stripe e o gerenciamento da conta do jogo.
 
 ### Adicionado
 
@@ -185,7 +189,7 @@ Lançamento da versão 2.6.7 do PDL PRO com a escolha do método de recarga em B
 
 ## [2.6.6] - 2026-09-30
 
-Lançamento da versão 2.6.6 do PDL PRO com o dashboard de métricas staff em tempo real e observabilidade, log de auditoria administrativa, cobertura completa de domínios Google na política de CSP e harmonização visual com a identidade do tema.
+Lançamento da versão 2.6.6 do DIMES com o dashboard de métricas staff em tempo real e observabilidade, log de auditoria administrativa, cobertura completa de domínios Google na política de CSP e harmonização visual com a identidade do tema.
 
 ### Adicionado
 
@@ -200,7 +204,7 @@ Lançamento da versão 2.6.6 do PDL PRO com o dashboard de métricas staff em te
 
 ## [2.6.5] - 2026-09-29
 
-Lançamento da versão 2.6.5 do PDL PRO com o configurador de Analytics & Pixels nas integrações administrativas, injeção dinâmica de rastreamento no frontend sem necessidade de rebuild e liberação de CSP para ferramentas de tráfego pago.
+Lançamento da versão 2.6.5 do DIMES com o configurador de Analytics & Pixels nas integrações administrativas, injeção dinâmica de rastreamento no frontend sem necessidade de rebuild e liberação de CSP para ferramentas de tráfego pago.
 
 ### Adicionado
 
@@ -218,7 +222,7 @@ Lançamento da versão 2.6.5 do PDL PRO com o configurador de Analytics & Pixels
 
 ## [2.6.4] - 2026-09-28
 
-Lançamento da versão 2.6.4 do PDL PRO com o `.env` da instalação dentro do backup cifrado (e a recuperação de servidor novo com `restore --env-only`), progresso no envio e no download dos backups e a pergunta do destino do `backup-cloud` tolerante a respostas vazias.
+Lançamento da versão 2.6.4 do DIMES com o `.env` da instalação dentro do backup cifrado (e a recuperação de servidor novo com `restore --env-only`), progresso no envio e no download dos backups e a pergunta do destino do `backup-cloud` tolerante a respostas vazias.
 
 ### Adicionado
 
@@ -234,7 +238,7 @@ Lançamento da versão 2.6.4 do PDL PRO com o `.env` da instalação dentro do b
 
 ## [2.6.3] - 2026-09-28
 
-Lançamento da versão 2.6.3 do PDL PRO com backup na nuvem (Google Drive, Cloudflare R2, S3 e demais destinos do rclone) incluindo banco, mídia e arquivos privados, restauração direto da nuvem, agendamento diário com retenção e a atualização pela release sem reinício duplo dos serviços.
+Lançamento da versão 2.6.3 do DIMES com backup na nuvem (Google Drive, Cloudflare R2, S3 e demais destinos do rclone) incluindo banco, mídia e arquivos privados, restauração direto da nuvem, agendamento diário com retenção e a atualização pela release sem reinício duplo dos serviços.
 
 ### Adicionado
 
@@ -246,7 +250,7 @@ Lançamento da versão 2.6.3 do PDL PRO com backup na nuvem (Google Drive, Cloud
 
 ## [2.6.2] - 2026-09-28
 
-Lançamento da versão 2.6.2 do PDL PRO com o configurador de bônus de recarga na Carteira administrativa (campanhas, faixas progressivas, incentivos de 1ª recarga e PIX e simulador), upload interativo de flyers nos banners, tráfego pago e analytics configuráveis por ambiente com respeito ao consentimento de cookies, abas do painel preservadas na URL e a correção da geração de PIX no checkout Mercado Pago.
+Lançamento da versão 2.6.2 do DIMES com o configurador de bônus de recarga na Carteira administrativa (campanhas, faixas progressivas, incentivos de 1ª recarga e PIX e simulador), upload interativo de flyers nos banners, tráfego pago e analytics configuráveis por ambiente com respeito ao consentimento de cookies, abas do painel preservadas na URL e a correção da geração de PIX no checkout Mercado Pago.
 
 ### Adicionado
 
@@ -300,7 +304,7 @@ Lançamento da versão 2.6.2 do PDL PRO com o configurador de bônus de recarga 
 
 - **Abas do painel preservadas na URL**: a aba ativa passa a ficar em `?tab=` (e sub-abas em parâmetro próprio, como `?pass=` no passe de batalha), sobrevivendo ao recarregamento e a links compartilhados em Carteira administrativa, Integrações, Configurador da loja, Pacotes e cupons, Observação de itens, Inventário, Loja e Passe de batalha. O hook compartilhado `useSearchParamTab` centraliza o comportamento, também adotado pelo Salão de jogos.
 - Os testes de interface do frontend aguardam até 5 s por renderizações assíncronas (`asyncUtilTimeout`), eliminando falhas intermitentes sob instrumentação de cobertura e em runners de CI.
-- **Integração Lineage padrão**: o PDL PRO passa a selecionar o dialeto
+- **Integração Lineage padrão**: o DIMES passa a selecionar o dialeto
   `l2jpremium` quando `LINEAGE_QUERY_MODULE` não é informado. Outros dialetos
   continuam disponíveis por configuração explícita no `.env`.
 
@@ -324,7 +328,7 @@ Lançamento da versão 2.6.2 do PDL PRO com o configurador de bônus de recarga 
 
 ## [2.6.1] - 2026-09-27
 
-Lançamento da versão 2.6.1 do PDL PRO trazendo suporte a alternância de conta ativa no Mercado de Personagens e Leilões, divisão do seletor da Caça do Dia em seletores dedicados de Conta e Personagem com tratamento gracioso de estado vazio, e novas ilustrações temáticas exclusivas em alta definição no estilo dark fantasy para todos os cards de resumo e atalhos do painel.
+Lançamento da versão 2.6.1 do DIMES trazendo suporte a alternância de conta ativa no Mercado de Personagens e Leilões, divisão do seletor da Caça do Dia em seletores dedicados de Conta e Personagem com tratamento gracioso de estado vazio, e novas ilustrações temáticas exclusivas em alta definição no estilo dark fantasy para todos os cards de resumo e atalhos do painel.
 
 ### Adicionado
 
@@ -357,7 +361,7 @@ Lançamento da versão 2.6.1 do PDL PRO trazendo suporte a alternância de conta
 
 ## [2.6.0] - 2026-09-26
 
-Lançamento da versão 2.6.0 do PDL PRO trazendo o novo sistema de banners informativos e promocionais, gestão e grade de 7 vagas para personagens, modal de checkout da carteira com Mercado Pago Bricks/PIX em alta fidelidade e paridade aprimorada para servidores Lineage 2 (Lucera 2).
+Lançamento da versão 2.6.0 do DIMES trazendo o novo sistema de banners informativos e promocionais, gestão e grade de 7 vagas para personagens, modal de checkout da carteira com Mercado Pago Bricks/PIX em alta fidelidade e paridade aprimorada para servidores Lineage 2 (Lucera 2).
 
 ### Adicionado
 
@@ -372,7 +376,7 @@ Lançamento da versão 2.6.0 do PDL PRO trazendo o novo sistema de banners infor
   - Visualização em grade fixa de 7 slots em `/panel/accounts`: personagens existentes exibidos com avatar, nível, classe e status; vagas não preenchidas exibidas como "vazias" com atalho direto de criação.
   - Modal de criação de personagens (`CreateCharacterModal`) com suporte a escolha de raça/classe, validação de regras de apelido e pré-visualização responsiva.
 - Compatibilidade de schema do banco Lineage 2: rotina automática `ensure_columns()` no `SqlAlchemyLineageGateway` para verificar e adicionar colunas ausentes (`email`, `created_time`, `linked_uuid`) na tabela `accounts` de forma transparente em tempo de execução, comando management `prepare_lineage_database` (com flag `--with-exchange`) e verificação integrada ao probe do configurador de integrações.
-- Suporte explícito ao alias de hash `whirlpool2` em `LineagePasswordHasher` (`LINEAGE_PASSWORD_ALGO=whirlpool2`), alinhando o PDL PRO às convenções de configuração do loginserver da Lucera 2.
+- Suporte explícito ao alias de hash `whirlpool2` em `LineagePasswordHasher` (`LINEAGE_PASSWORD_ALGO=whirlpool2`), alinhando o DIMES às convenções de configuração do loginserver da Lucera 2.
 - Tutoriais de integração em [docs/tutoriais/](../tutoriais/README.md).
 - [Fonte única](../projeto/fonte-unica.md): mapa canônico (segurança, ops, tutoriais) e callouts GitHub.
 - [Economia do jogador](../funcionalidades/economia-jogador.md): carteira, loja, marketplace e leilão.
@@ -381,7 +385,7 @@ Lançamento da versão 2.6.0 do PDL PRO trazendo o novo sistema de banners infor
 ### Alterado
 
 - Checkout de recarga na Carteira (`/panel/wallet`): fluxo de "Meios de pagamento", documento do pagador (CPF/CNPJ), Mercado Pago Bricks, Stripe e resultado do PIX migrados para modal dedicado (`WalletCheckoutModal`), eliminando a expansão inline e a perda de contexto na tela.
-- Estilização e identidade visual do Mercado Pago Bricks: integração de `customVariables` com o design system do PDL PRO (paleta escura obsidiana e botões em ouro `--panel-gold`), máscara/formatação de documento e tela dedicada de PIX com QR code em alta fidelidade e cópia rápida.
+- Estilização e identidade visual do Mercado Pago Bricks: integração de `customVariables` com o design system do DIMES (paleta escura obsidiana e botões em ouro `--panel-gold`), máscara/formatação de documento e tela dedicada de PIX com QR code em alta fidelidade e cópia rápida.
 - Configurador de integrações SMTP (`/panel/admin/integrations`): campo `EMAIL_BACKEND` substituído por seleção intuitiva entre SMTP Real (Produção), Console/Log (Mock de desenvolvimento), Desativado e Memória, com alertas contextuais quando em modo Mock e feedback descritivo no probe de teste.
 - Documentação só em Markdown: removidos PDFs de migração e scripts em `docs/_pdf/`.
 - Auditorias Python movidas de `desenvolvimento/` para `historico/`.
@@ -482,7 +486,7 @@ consolidados em **24 de setembro de 2026**.
   em cards no estilo da carteira (prévia visual, selos e status).
 - Header, rodapé, aria da marca e copyright da área pública passam a usar o
   **nome** (e o slogan) configurados em **Painel → Administração → Painel e
-  servidor**, em vez de “PDL PRO” fixo no chrome.
+  servidor**, em vez de “DIMES” fixo no chrome.
 
 ## [2.5.8] - 2026-09-23
 

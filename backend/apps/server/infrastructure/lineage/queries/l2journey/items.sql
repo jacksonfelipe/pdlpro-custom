@@ -30,7 +30,7 @@ LIMIT 1
 -- Format: itemId count enchant;itemId count enchant...
 -- name: deposit_item
 INSERT INTO custom_mail (receiver, subject, message, items)
-VALUES (:owner_id, 'Entrega PDL PRO', 'Seus itens adquiridos no painel foram entregues com sucesso.', CONCAT(:item_id, ' ', :qty, ' ', :enchant))
+VALUES (:owner_id, 'Entrega DIMES', 'Seus itens adquiridos no painel foram entregues com sucesso.', CONCAT(:item_id, ' ', :qty, ' ', :enchant))
 
 -- name: delivery_character
 SELECT charId AS char_id, online FROM characters WHERE char_name = :name FOR UPDATE

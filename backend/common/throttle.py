@@ -1,4 +1,4 @@
-"""Classes de rate limiting e throttle para o Dimes."""
+"""Classes de rate limiting e throttle para o DIMES."""
 
 from __future__ import annotations
 

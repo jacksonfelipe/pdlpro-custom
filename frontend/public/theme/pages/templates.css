@@ -1590,6 +1590,100 @@
 [data-theme-template="watchfire"] .tpl-stat strong { font-size: 40px; }
 [data-theme-template="watchfire"] .tpl-vigil__cta { text-align: center; }
 
+/* Hallow Verde — cidadela verde, vídeo e os mesmos dados públicos do catálogo. */
+[data-theme-template="hallowverde"] {
+  gap: 0;
+  padding-top: 0;
+  background:
+    linear-gradient(180deg, var(--theme-bg-deep, #06100e), color-mix(in srgb, var(--theme-bg-deep, #06100e) 82%, #000));
+}
+[data-theme-template="hallowverde"] .tpl-hallow__hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: min(780px, calc(100vh - var(--public-header-height, 76px)));
+  place-items: center;
+  overflow: hidden;
+  background: var(--tpl-art-hero, var(--theme-art-bg-5)) center / cover no-repeat;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__hero .video { z-index: -2; }
+[data-theme-template="hallowverde"] .tpl-hallow__veil {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--theme-accent-bright, #71f1bb) 16%, transparent), transparent 42%),
+    linear-gradient(90deg, color-mix(in srgb, var(--theme-bg-deep, #06100e) 72%, transparent), transparent 52%, color-mix(in srgb, var(--theme-bg-deep, #06100e) 70%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--theme-bg-deep, #06100e) 18%, transparent), var(--theme-bg-deep, #06100e));
+}
+[data-theme-template="hallowverde"] .tpl-hallow__copy {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(100% - 32px, 780px);
+  padding: 72px 24px;
+  text-align: center;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__copy h1 {
+  max-width: 14ch;
+  margin: 0;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: clamp(2.8rem, 7vw, 6.6rem);
+  line-height: .95;
+  letter-spacing: .05em;
+  text-shadow: 0 4px 32px color-mix(in srgb, var(--theme-bg-deep, #06100e) 85%, transparent);
+}
+[data-theme-template="hallowverde"] .tpl-hallow__copy > p:not(.tpl-kicker) {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--theme-muted, #b3c9c0);
+  font-size: 1.08rem;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__stats {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 32px, 1080px);
+  margin: -42px auto 0;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__stats .tpl-stats {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--theme-accent, #44c996) 35%, transparent);
+  background: color-mix(in srgb, var(--theme-bg-deep, #06100e) 88%, transparent);
+  box-shadow: 0 20px 50px color-mix(in srgb, #000 52%, transparent);
+}
+[data-theme-template="hallowverde"] .tpl-hallow__stats .tpl-stat {
+  border-color: color-mix(in srgb, var(--theme-accent, #44c996) 22%, transparent);
+  background: color-mix(in srgb, var(--theme-surface, #0b211b) 82%, transparent);
+}
+[data-theme-template="hallowverde"] .tpl-hallow__ledger,
+[data-theme-template="hallowverde"] .tpl-hallow__features {
+  width: min(100% - 32px, var(--public-container-width, 1200px));
+  margin-inline: auto;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__ledger {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+  gap: 28px;
+  padding: 76px 0 40px;
+}
+[data-theme-template="hallowverde"] .tpl-hallow__news,
+[data-theme-template="hallowverde"] .tpl-hallow__ranking {
+  padding: clamp(20px, 4vw, 36px);
+  border: 1px solid color-mix(in srgb, var(--theme-accent, #44c996) 22%, transparent);
+  background: color-mix(in srgb, var(--theme-surface, #0b211b) 78%, transparent);
+}
+[data-theme-template="hallowverde"] .tpl-hallow__ranking { display: grid; align-content: start; gap: 16px; }
+[data-theme-template="hallowverde"] .tpl-hallow__features { padding: 40px 0 72px; }
+[data-theme-template="hallowverde"] .tpl-hallow__features .tpl-features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+[data-theme-template="hallowverde"] .tpl-hallow .cta-banner { margin-bottom: 0; }
+
 [data-pdl-template] .tpl-block {
   width: min(100% - 32px, var(--public-container-width, 1200px));
   margin-inline: auto;
@@ -2158,6 +2252,7 @@ html[data-pdl-theme="default"][data-pdl-template="gemwright"] .mobile-nav.is-ope
   [data-theme-template="ironpatch"] .tpl-launcher__hero,
   [data-theme-template="twinwake"] .tpl-split,
   [data-theme-template="eventide"] .tpl-theater__row,
+  [data-theme-template="hallowverde"] .tpl-hallow__ledger,
   [data-theme-template="laurelwake"] .tpl-podium {
     grid-template-columns: 1fr;
   }
@@ -2169,6 +2264,7 @@ html[data-pdl-theme="default"][data-pdl-template="gemwright"] .mobile-nav.is-ope
   [data-theme-template="twinwake"] .tpl-gate .tpl-features--cards,
   [data-theme-template="cartograph"] .tpl-features--regions,
   [data-theme-template="classing"] .tpl-features--paths,
+  [data-theme-template="hallowverde"] .tpl-hallow__features .tpl-features,
   [data-theme-template="hearthspire"] .tpl-tavern__hall .tpl-features--cards {
     grid-template-columns: 1fr;
   }
@@ -2177,4 +2273,6 @@ html[data-pdl-theme="default"][data-pdl-template="gemwright"] .mobile-nav.is-ope
   [data-theme-template="cartograph"] .tpl-atlas .tpl-stats {
     grid-template-columns: 1fr;
   }
+  [data-theme-template="hallowverde"] .tpl-hallow__copy { padding-block: 56px; }
+  [data-theme-template="hallowverde"] .tpl-hallow__stats { margin-top: -24px; }
 }

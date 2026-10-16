@@ -1,4 +1,4 @@
-# PDL PRO — listagem HTTP do launcher (opção --http do ./setup.sh ftp).
+# DIMES — listagem HTTP do launcher (opção --http do ./setup.sh ftp).
 #   domain     {{domain}}
 #   directory  {{directory}}
 #   ssl        {{ssl}}

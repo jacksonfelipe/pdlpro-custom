@@ -8,7 +8,7 @@ from common.di.bootstrap import DependencyInjection
 class Command(BaseCommand):
     """Comando Django ``prepare_lineage_database``.
 
-    Verifica e adiciona na tabela accounts do jogo as colunas exigidas pelo Dimes:
+    Verifica e adiciona na tabela accounts do jogo as colunas exigidas pelo DIMES:
     email, created_time e linked_uuid.
     Opcionalmente também prepara a tabela pdl_exchange_receipts com a flag --with-exchange.
     """

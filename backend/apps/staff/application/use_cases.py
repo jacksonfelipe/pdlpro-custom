@@ -42,7 +42,7 @@ def _panel_defaults(server_info: GetServerInfoUseCase, index_config: IIndexConfi
     row = index_config.get_active()
     return {
         "id": str(row.id) if row else None,
-        "slogan": row.slogan if row else str(getattr(settings, "PROJECT_TITLE", "Dimes")),
+        "slogan": row.slogan if row else str(getattr(settings, "PROJECT_TITLE", "DIMES")),
         "name": info.name,
         "description": info.description,
         "chronicle": info.chronicle,

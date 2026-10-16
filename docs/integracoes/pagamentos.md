@@ -8,7 +8,7 @@
 
 ## Descrição das cobranças
 
-Em **Admin → Integrações → Pagamentos**, cada provedor possui um campo de descrição. Quando vazio, o placeholder mostra o formato padrão: `PDL PRO — {quantidade} moedas` no Stripe e `Moedas PDL ({pacote})` no Mercado Pago. Quantidade e pacote são preenchidos pelo pedido; compras avulsas usam `custom` como pacote. O placeholder não preenche nem salva o campo. Uma descrição personalizada vale para novas cobranças.
+Em **Admin → Integrações → Pagamentos**, cada provedor possui um campo de descrição. Quando vazio, o placeholder mostra o formato padrão: `DIMES — {quantidade} moedas` no Stripe e `Moedas PDL ({pacote})` no Mercado Pago. Quantidade e pacote são preenchidos pelo pedido; compras avulsas usam `custom` como pacote. O placeholder não preenche nem salva o campo. Uma descrição personalizada vale para novas cobranças.
 
 O botão **?** junto ao rótulo usa a variante visual `help`: selo em losango com borda dupla e brilho discreto, cores do tema e destaque quando aberto ou focado, sem a textura dos botões de ação. Abre a ajuda por clique, toque ou teclado. Na descrição personalizada, use `{quantidade}` para as moedas compradas e `{pacote}` para o código do pacote. Exemplo: `Créditos {quantidade} — {pacote}`. Ambos os provedores substituem essas variáveis usando dados do pedido; também aceitam os aliases EN `{quantity}` / `{package}` e ES `{cantidad}` / `{paquete}`. Variáveis desconhecidas permanecem literais; valores substituídos não são reinterpretados como templates.
 

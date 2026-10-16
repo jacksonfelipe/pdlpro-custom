@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PDL PRO package.
+# This file is distributed under the same license as the DIMES package.
 msgid ""
 msgstr ""
-"Project-Id-Version: PDL PRO\n"
+"Project-Id-Version: DIMES\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-16 22:39-0300\n"
 "PO-Revision-Date: 2026-09-09 22:00+0000\n"
-"Last-Translator: PDL PRO\n"
+"Last-Translator: DIMES\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -90,8 +90,8 @@ msgid "Limite de tentativas de 2FA excedido. Entre novamente."
 msgstr "Límite de intentos de 2FA excedido. Inicie sesión nuevamente."
 
 #: .\apps\accounts\application\email_use_cases.py:56
-msgid "Confirme seu e-mail no PDL PRO"
-msgstr "Confirma tu correo en PDL PRO"
+msgid "Confirme seu e-mail no DIMES"
+msgstr "Confirma tu correo en DIMES"
 
 #: .\apps\accounts\application\email_use_cases.py:58
 #, python-format
@@ -107,8 +107,8 @@ msgstr ""
 "%(link)s\n"
 
 #: .\apps\accounts\application\email_use_cases.py:135
-msgid "Redefinir senha do PDL PRO"
-msgstr "Restablecer la contraseña de PDL PRO"
+msgid "Redefinir senha do DIMES"
+msgstr "Restablecer la contraseña de DIMES"
 
 #: .\apps\accounts\application\email_use_cases.py:137
 #, python-format
@@ -2387,13 +2387,13 @@ msgstr "Vinculación de cuenta Lineage"
 #: .\apps\server\application\account_use_cases.py:509
 #, python-format
 msgid ""
-"Clique no link para vincular a conta %(login)s ao PDL PRO:\n"
+"Clique no link para vincular a conta %(login)s ao DIMES:\n"
 "\n"
 "%(link)s\n"
 "\n"
 "O link expira em 1 hora."
 msgstr ""
-"Haz clic en el enlace para vincular la cuenta %(login)s a PDL PRO:\n"
+"Haz clic en el enlace para vincular la cuenta %(login)s a DIMES:\n"
 "\n"
 "%(link)s\n"
 "\n"
@@ -4656,7 +4656,7 @@ msgstr "ID secuencial interno. Nunca exponer vía API."
 #: .\common\swagger.py:13
 msgid ""
 "\n"
-"API REST do **PDL PRO** (Painel Definitivo Lineage 2.0).\n"
+"API REST do **DIMES** (Painel Definitivo Lineage 2.0).\n"
 "\n"
 "Backend somente API. O frontend React consome estes contratos.\n"
 "\n"
@@ -4686,7 +4686,7 @@ msgid ""
 "`request_id`.\n"
 msgstr ""
 "\n"
-"API REST de **PDL PRO** (Painel Definitivo Lineage 2.0).\n"
+"API REST de **DIMES** (Painel Definitivo Lineage 2.0).\n"
 "\n"
 "Backend solo API. El frontend React consume estos contratos.\n"
 "\n"

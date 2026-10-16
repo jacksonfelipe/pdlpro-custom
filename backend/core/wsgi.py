@@ -1,4 +1,4 @@
-"""WSGI config for Dimes."""
+"""WSGI config for DIMES."""
 
 import os
 

@@ -4,7 +4,7 @@
 
 > **Atualizado:** 3 de outubro de 2026
 
-O PDL PRO aplica uma única identidade visual às páginas públicas, autenticação, painel do
+O DIMES aplica uma única identidade visual às páginas públicas, autenticação, painel do
 jogador e administração React. Além de CSS e assets locais, um pacote pode selecionar um
 renderer homologado e declarar sua composição, conteúdo e comportamentos no `theme.json`.
 

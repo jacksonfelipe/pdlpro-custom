@@ -1,4 +1,4 @@
-"""OpenAPI helpers for the Dimes API."""
+"""OpenAPI helpers for the DIMES API."""
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ from typing import Any
 
 from django.utils.translation import gettext_lazy as _
 
-OPENAPI_TITLE = "Dimes API"
+OPENAPI_TITLE = "DIMES API"
 
 # Keep leading/trailing newlines: msgid must match locale/*.po exactly (no .strip()).
 OPENAPI_DESCRIPTION = _(
     """
-API REST do **Dimes** (Painel Definitivo Lineage 2.0).
+API REST do **DIMES** (Painel Definitivo Lineage 2.0).
 
 Backend somente API. O frontend React consome estes contratos.
 

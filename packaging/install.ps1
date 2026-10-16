@@ -1,4 +1,4 @@
-# Instalador público da versão publicada do PDL PRO (Windows + Docker Desktop).
+# Instalador público da versão publicada do DIMES (Windows + Docker Desktop).
 #Requires -Version 5.1
 param(
     [string]$Version = 'latest',
@@ -18,7 +18,7 @@ $DefaultRegistry = if ($env:PDL_IMAGE_REGISTRY) { $env:PDL_IMAGE_REGISTRY } else
 
 function Show-Help {
     @'
-Instala uma versao publicada do PDL PRO (imagens Docker + Compose).
+Instala uma versao publicada do DIMES (imagens Docker + Compose).
 
 Uso:
   .\install.ps1 -Domain seudominio.com -Yes
@@ -294,7 +294,7 @@ try {
             Pop-Location
         }
     }
-    Write-Host "[OK] PDL PRO $resolved em execucao. Proximo passo: proxy HTTPS -> http://${BindAddress}:${Port}"
+    Write-Host "[OK] DIMES $resolved em execucao. Proximo passo: proxy HTTPS -> http://${BindAddress}:${Port}"
 }
 finally {
     Remove-Item -Recurse -Force $work -ErrorAction SilentlyContinue

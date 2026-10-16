@@ -1159,7 +1159,7 @@
       "descriptionHint": "Texto enviado ao provedor nas novas cobranças. Deixe vazio para usar a descrição padrão.",
       "variablesHelp": "Ajuda sobre variáveis — {{provider}}",
       "variablesHint": "Use {quantidade} para a quantidade comprada, {pacote} para o código do pacote e {moeda} para o nome atual da moeda virtual. Exemplo: {quantidade} {moeda} — {pacote}. As variáveis são substituídas nas novas cobranças dos dois provedores. Variáveis desconhecidas permanecem literais. Deixe vazio para usar o padrão.",
-      "stripeDescriptionPlaceholder": "Dimes — {quantidade} {{coinName}}",
+      "stripeDescriptionPlaceholder": "DIMES — {quantidade} {{coinName}}",
       "mpDescriptionPlaceholder": "{{coinNameTitle}} PDL ({pacote})",
       "stripePresentmentHint": "Moedas de cobrança suportadas no Stripe, separadas por vírgula. Ex.: BRL, USD, EUR",
       "coinNameHint": "Até 40 caracteres. Ex.: Blablabla Coin. Usado em saldos, preços, recargas e transferências. Vazio usa o nome do idioma ativo.",
@@ -1405,7 +1405,7 @@
       "files": "Arquivos na raiz: <c>theme.json</c>, <c>theme.css</c>, <c>metadados.json</c> e pasta <c>locales/</c> opcionais, pastas <c>images/</c> e <c>fonts/</c>",
       "accepted": "Aceitos: CSS, imagens, fontes locais, <c>metadados.json</c> e <c>locales/{pt,en,es}.json</c> apontados por <c>theme.json</c>",
       "blocked": "Bloqueados: scripts, HTML executável, Markdown e path traversal",
-      "renderer": "Catálogo de 20 layouts (Vesperlyn, Ironspine, Warhorn…) ou aliases <c>portal-v1</c> e <c>club-v1</c>",
+      "renderer": "Catálogo de 21 layouts (Vesperlyn, Hallow Verde, Ironspine, Warhorn…) ou aliases <c>portal-v1</c> e <c>club-v1</c>",
       "activation": "Instalar ≠ ativar: ative no catálogo depois da validação"
     },
     "catalogEyebrow": "Catálogo",

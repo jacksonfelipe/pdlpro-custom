@@ -1,20 +1,45 @@
 @echo off
 setlocal EnableDelayedExpansion
 chcp 65001 >nul
-title PDL PRO - Gerenciador Git Custom & Upstream
+title DIMES - Gerenciador Git Custom ^& Upstream
 
 :: Garante que o script roda a partir da pasta raiz do projeto
 cd /d "%~dp0"
 
 :CHECK_GIT
-where git >nul 2>&1
-if %ERRORLEVEL% neq 0 (
+:: Algumas janelas abertas por duplo clique não herdam o PATH atualizado do Windows.
+:: Usa o executável oficial diretamente antes de verificar o PATH.
+set "GIT_EXE="
+set "GIT_CMD_DIR="
+if exist "C:\Program Files\Git\cmd\git.exe" (
+    set "GIT_EXE=C:\Program Files\Git\cmd\git.exe"
+    set "GIT_CMD_DIR=C:\Program Files\Git\cmd"
+)
+if not defined GIT_EXE if exist "C:\Program Files (x86)\Git\cmd\git.exe" (
+    set "GIT_EXE=C:\Program Files (x86)\Git\cmd\git.exe"
+    set "GIT_CMD_DIR=C:\Program Files (x86)\Git\cmd"
+)
+if defined GIT_CMD_DIR set "PATH=!GIT_CMD_DIR!;!PATH!"
+
+if not defined GIT_EXE (
     cls
     echo ========================================================
     echo  [ERRO CRITICO] O Git nao esta instalado ou no PATH!
     echo ========================================================
     echo  Instale o Git para Windows ou adicione-o nas variaveis de ambiente.
     echo  Download oficial: https://git-scm.com/download/win
+    echo.
+    pause
+    exit /b 1
+)
+"!GIT_EXE!" --version >nul 2>&1
+if errorlevel 1 (
+    cls
+    echo ========================================================
+    echo  [ERRO CRITICO] A instalacao do Git nao pode ser executada
+    echo ========================================================
+    echo  Caminho encontrado: !GIT_EXE!
+    echo  Reinstale o Git para Windows e tente novamente.
     echo.
     pause
     exit /b 1
@@ -32,6 +57,43 @@ if not exist ".git" (
     exit /b 1
 )
 
+:: -----------------------------------------------------------------------
+:: Verifica identidade git (user.name e user.email) — necessario para commits
+:: -----------------------------------------------------------------------
+:CHECK_IDENTITY
+set GIT_USER_NAME=
+set GIT_USER_EMAIL=
+for /f "delims=" %%N in ('git config user.name 2^>nul') do set GIT_USER_NAME=%%N
+for /f "delims=" %%E in ('git config user.email 2^>nul') do set GIT_USER_EMAIL=%%E
+
+if "!GIT_USER_NAME!"=="" (
+    cls
+    echo ===============================================================================
+    echo  [CONFIGURACAO INICIAL] Identidade Git nao encontrada para este usuario
+    echo ===============================================================================
+    echo  O Git precisa saber quem voce e para registrar os commits corretamente.
+    echo  Isso so precisa ser feito uma vez nesta maquina.
+    echo ===============================================================================
+    echo.
+    set /p GIT_USER_NAME="Seu nome completo ou apelido (ex: jacksonfelipe): "
+    if "!GIT_USER_NAME!"=="" set GIT_USER_NAME=jacksonfelipe
+    git config --global user.name "!GIT_USER_NAME!"
+    echo [OK] Nome registrado: !GIT_USER_NAME!
+    echo.
+)
+
+if "!GIT_USER_EMAIL!"=="" (
+    echo  Email nao configurado. Pode usar o email do GitHub no formato:
+    echo  usuario@users.noreply.github.com
+    echo.
+    set /p GIT_USER_EMAIL="Seu email (ENTER para usar jacksonfelipe@users.noreply.github.com): "
+    if "!GIT_USER_EMAIL!"=="" set GIT_USER_EMAIL=jacksonfelipe@users.noreply.github.com
+    git config --global user.email "!GIT_USER_EMAIL!"
+    echo [OK] Email registrado: !GIT_USER_EMAIL!
+    echo.
+    timeout /t 2 >nul
+)
+
 :MENU
 cls
 :: Detecta branch atual
@@ -47,7 +109,7 @@ for /f "tokens=1" %%R in ('git remote 2^>nul') do (
 )
 
 echo ===============================================================================
-echo            PDL PRO - SINCRONIZADOR GIT (CUSTOM ^& UPSTREAM)
+echo            DIMES - SINCRONIZADOR GIT (CUSTOM ^& UPSTREAM)
 echo ===============================================================================
 echo  Branch Ativa: [!CURRENT_BRANCH!]
 echo  Remoto Pessoal  (origin)   : !HAS_ORIGIN! (1 = Configurado, 0 = Ausente)
@@ -59,7 +121,7 @@ echo      -^> Quando usar: No meio ou fim do dia para salvar seu progresso no se
 echo         sem puxar atualizacoes oficiais ainda.
 echo.
 echo  [2] PUXAR ATUALIZACOES OFICIAIS (Fetch + Merge de 'upstream/!CURRENT_BRANCH!')
-echo      -^> Quando usar: Quando quiser testar novidades do PDL PRO oficial localmente
+echo      -^> Quando usar: Quando quiser testar novidades do DIMES oficial localmente
 echo         sem subir nada para o seu GitHub ainda.
 echo.
 echo  [3] SINCRONIZACAO COMPLETA (Commit Local -^> Puxar Upstream -^> Enviar Origin) [RECOMENDADO]
@@ -127,14 +189,14 @@ if "!COMMIT_MSG!"=="" set COMMIT_MSG=feat: atualizacoes customizadas em !date! !
 echo.
 echo [1/3] Adicionando todos os arquivos (git add .)...
 git add .
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo [ERRO] Falha ao adicionar arquivos. Verifique permissoes de arquivo.
     goto END_OP
 )
 
 echo [2/3] Criando commit...
 git commit -m "!COMMIT_MSG!"
-set COMMIT_RET=%ERRORLEVEL%
+set COMMIT_RET=!ERRORLEVEL!
 if !COMMIT_RET! neq 0 (
     echo.
     echo [INFO] Nenhuma nova alteracao encontrada para commitar.
@@ -145,7 +207,7 @@ if !COMMIT_RET! neq 0 (
 echo.
 echo [3/3] Enviando para origin/!CURRENT_BRANCH! (git push origin !CURRENT_BRANCH!)...
 git push origin !CURRENT_BRANCH!
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo.
     echo ============================================================================
     echo  [ERRO NO PUSH] O envio foi rejeitado ou falhou!
@@ -213,7 +275,7 @@ if !IS_DIRTY! equ 1 (
 echo.
 echo [2/3] Buscando atualizacoes do upstream (git fetch upstream)...
 git fetch upstream
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo.
     echo [ERRO] Nao foi possivel conectar ao upstream. Verifique sua conexao ou o link do repositorio.
     goto END_OP
@@ -222,7 +284,7 @@ if %ERRORLEVEL% neq 0 (
 echo.
 echo [3/3] Mesclando atualizacoes (git merge upstream/!CURRENT_BRANCH!)...
 git merge --no-edit upstream/!CURRENT_BRANCH!
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo.
     echo ============================================================================
     echo  [ATENCAO: CONFLITO DE MERGE DETECTADO!]
@@ -270,13 +332,13 @@ git commit -m "chore: sincronizacao automatica - preservando customizacoes locai
 echo.
 echo [PASSO 2/3] Baixando novidades do oficial (upstream)...
 git fetch upstream
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo [ERRO] Falha ao fazer fetch do upstream.
     goto END_OP
 )
 
 git merge --no-edit upstream/!CURRENT_BRANCH!
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo.
     echo [ERRO] Ocorreu um conflito ao mesclar com upstream.
     echo O processo foi pausado para voce resolver os conflitos.
@@ -323,7 +385,7 @@ echo ===========================================================================
 echo.
 echo  [+] Versao detectada  : v!PDL_VERSION!
 echo.
-echo  [UPSTREAM] Novidades do PDL PRO oficial:
+echo  [UPSTREAM] Novidades do DIMES oficial:
 for /f "delims=" %%L in ('git log --oneline ORIG_HEAD..HEAD 2^>nul') do echo     - %%L
 if "!UPSTREAM_LOG!"=="(nenhuma novidade do upstream nesta sincronizacao)" echo     (nenhuma novidade nova)
 echo.
@@ -341,7 +403,7 @@ echo.
 if not "!EXTRA_NOTE!"=="" (
     set FINAL_MSG=release: v!PDL_VERSION! - !EXTRA_NOTE!
 ) else (
-    set FINAL_MSG=release: v!PDL_VERSION! - sincronizacao PDL PRO custom
+    set FINAL_MSG=release: v!PDL_VERSION! - sincronizacao DIMES custom
 )
 
 git add .
@@ -367,9 +429,6 @@ if !ERRORLEVEL! equ 0 (
 )
 goto END_OP
 
-
-
-
 :: ===============================================================================
 :: OPCAO 4: STATUS DETALHADO
 :: ===============================================================================
@@ -386,13 +445,13 @@ git remote -v
 echo.
 echo [ESTADO DOS ARQUIVOS LOCAIS]:
 git status -s
-if %ERRORLEVEL% neq 0 (
+if !ERRORLEVEL! neq 0 (
     echo Nao foi possivel ler o status.
 )
 echo.
 echo [DIFERENCA DE COMMITS COM ORIGIN]:
 git log --oneline origin/!CURRENT_BRANCH!..HEAD 2>nul
-if %ERRORLEVEL% equ 0 (
+if !ERRORLEVEL! equ 0 (
     echo (Commits listados acima existem localmente mas ainda nao foram enviados ao origin)
 ) else (
     echo (origin/!CURRENT_BRANCH! ainda nao possui tracking ativo)
@@ -400,7 +459,7 @@ if %ERRORLEVEL% equ 0 (
 echo.
 echo [DIFERENCA DE COMMITS COM UPSTREAM]:
 git log --oneline HEAD..upstream/!CURRENT_BRANCH! 2>nul
-if %ERRORLEVEL% equ 0 (
+if !ERRORLEVEL! equ 0 (
     echo (Commits listados acima existem no upstream mas ainda nao foram incorporados)
 )
 goto END_OP
@@ -429,7 +488,7 @@ if "%STASH_OPT%"=="1" (
     echo Alteracoes guardadas com sucesso.
 ) else if "%STASH_OPT%"=="2" (
     git stash pop
-    if %ERRORLEVEL% neq 0 (
+    if !ERRORLEVEL! neq 0 (
         echo [AVISO] Houve conflito ao restaurar o stash. Resolva os arquivos ou descarte.
     ) else (
         echo Stash restaurado com sucesso!
@@ -459,7 +518,7 @@ echo.
 set /p MERGE_OPT="Escolha [1-3]: "
 if "%MERGE_OPT%"=="1" (
     git merge --abort
-    if %ERRORLEVEL% equ 0 (
+    if !ERRORLEVEL! equ 0 (
         echo [OK] Merge cancelado com sucesso. O projeto voltou ao estado original.
     ) else (
         echo [INFO] Nao ha nenhum merge ativo para cancelar.
@@ -467,7 +526,7 @@ if "%MERGE_OPT%"=="1" (
 ) else if "%MERGE_OPT%"=="2" (
     git add .
     git commit --no-edit -m "merge: resolucao de conflitos com upstream/!CURRENT_BRANCH!"
-    if %ERRORLEVEL% equ 0 (
+    if !ERRORLEVEL! equ 0 (
         echo [SUCESSO] Merge finalizado e comitado com sucesso!
     ) else (
         echo [ERRO] Ainda ha arquivos com conflito pendente ou o commit falhou.
@@ -559,13 +618,13 @@ echo  --------------------------------------------------------------------------
 echo  QUANDO USAR:
 echo   * Voce fez melhorias, criou telas ou alterou regras e quer fazer um BACKUP
 echo     seguro no seu GitHub privado.
-echo   * Voce AINDA NAO quer baixar atualizacoes do PDL PRO oficial porque esta
+echo   * Voce AINDA NAO quer baixar atualizacoes do DIMES oficial porque esta
 echo     no meio de um teste e nao quer novidades externas interferindo agora.
 echo.
 echo  [OPCAO 2] PUXAR ATUALIZACOES OFICIAIS (Fetch + Merge Upstream)
 echo  -----------------------------------------------------------------------------
 echo  QUANDO USAR:
-echo   * O PDL PRO oficial lancou correcoes de bugs ou melhorias novas e voce quer
+echo   * O DIMES oficial lancou correcoes de bugs ou melhorias novas e voce quer
 echo     apenas testar essas novidades no seu computador ANTES de decidir se vai
 echo     subir para o seu GitHub privado.
 echo.
@@ -575,7 +634,7 @@ echo  QUANDO USAR:
 echo   * No inicio do dia ou ao finalizar uma funcionalidade importante.
 echo   * Ela faz os 3 passos automaticamente:
 echo     1. Salva tudo o que voce fez (garante que nada seu seja perdido).
-echo     2. Baixa e mescla as novidades do PDL PRO oficial.
+echo     2. Baixa e mescla as novidades do DIMES oficial.
 echo     3. Sobe o codigo integrado e 100%% atualizado para seu GitHub privado.
 echo.
 echo  [OPCAO 5] GIT STASH (GUARDAR NA GAVETA)
@@ -591,6 +650,12 @@ echo   * Se voce e o repositorio oficial alteraram exatamente a mesma linha de u
 echo     mesmo arquivo e o Git pausou o merge pedindo decisao.
 echo   * Voce pode usar esta opcao para desfazer o merge (voltar ao normal) ou
 echo     concluir apos revisar os arquivos.
+echo.
+echo  [OPCAO 10] PUXAR DO SEU REPOSITORIO CUSTOM
+echo  -----------------------------------------------------------------------------
+echo  QUANDO USAR:
+echo   * Voce subiu mudancas pelo VPS, outro PC ou diretamente no GitHub e quer
+echo     baixar tudo para esta maquina local sem subir nada novo.
 echo.
 echo  =============================================================================
 echo  DICA DE OURO PARA CONFLITO ZERO:
@@ -748,7 +813,6 @@ echo  Branch: !CURRENT_BRANCH!
 echo ============================================================================
 goto END_OP
 
-
 :: ===============================================================================
 :: FUNCOES AUXILIARES
 :: ===============================================================================
@@ -784,5 +848,5 @@ goto MENU
 
 :EXIT_SCRIPT
 cls
-echo Encerrando PDL PRO Git Manager...
+echo Encerrando DIMES Git Manager...
 exit /b 0

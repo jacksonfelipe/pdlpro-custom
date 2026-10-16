@@ -2,17 +2,17 @@
 
 [← Índice](../README.md) · [Fonte única](../projeto/fonte-unica.md) · [Temas](temas.md) · [Extensões](../arquitetura/extensoes.md)
 
-> **Atualizado:** 25 de setembro de 2026
+> **Atualizado:** 16 de outubro de 2026
 
 O `presentation.renderer` do tema ZIP **escolhe** um layout do catálogo. Não cria um
-layout novo. Os 20 nomes abaixo são React homologado no core: o pacote manda textos,
+layout novo. Os 21 nomes abaixo são React homologado no core: o pacote manda textos,
 rotas e artes; o ZIP continua sem HTML/JS.
 
 `portal-v1` e `club-v1` permanecem no instalador como aliases de **Gemwright** e
 **Vesperlyn**. Pacotes antigos não quebram.
 
-Layout que nenhum destes cobre (outro casco em React) continua sendo
-[extensão de cliente](../arquitetura/extensoes.md) — não um 21º renderer “pra galera”.
+Layout que nenhum destes cobre exige um renderer React homologado no core ou uma
+[extensão de cliente](../arquitetura/extensoes.md); um ZIP não executa HTML ou JavaScript.
 
 ## Como escolher
 
@@ -37,6 +37,16 @@ contrato mínimo com o nome do tema.
 O `ThemeProvider` grava `data-pdl-renderer` com o id efetivo e `data-pdl-template`
 com o nome canônico. A folha `css/pages/templates.css` pinta por
 `[data-theme-template]` / `[data-pdl-template]`.
+
+### Pacote Hallow Verde
+
+O renderer `hallowverde` foi preparado para o pacote local
+`frontend/theme-packages/hallow-verde-pdl2.zip`. Ele usa `bg-web.mp4` como vídeo
+do hero, `hero2.webp` como poster/fallback, `bg-news.webp` no mural e conserva o
+carregador nativo do PDL com brasão, acento verde e barra de progresso. O pacote
+fica fora do Git por conter artes do cliente; instale o ZIP em **Administração →
+Temas**, valide-o e só então ative-o. A ativação troca apenas a identidade e a
+composição pública — APIs, login, painel e dados de jogo continuam os mesmos.
 
 ## Catálogo
 
@@ -64,6 +74,7 @@ Nomes fictícios. A composição é o que muda — não a paleta.
 | `eventide` | Eventide | Palco de vídeo, depois fila notícia+ranking | Essence “the journey comes alive” |
 | `wayfarer` | Wayfarer | Três passos numerados | Onboarding Essence / Chronicles |
 | `watchfire` | Watchfire | Números do servidor como hero | Status bar virada página |
+| `hallowverde` | Hallow Verde | Cidadela, vídeo verde, mural e ranking | Hallow Verde: ruínas, névoa e dragão |
 
 `gemwright` (e `portal-v1`) recusam `home.sections` com `stats` ou `pillars`. Os
 outros aceitam o contrato completo.
@@ -83,7 +94,7 @@ e `default/images/home/<id>-1.webp`. Cada slot é um enquadramento de uma cena
 completa do Classic (`home/*-v2`, `bg/coming-soon*`, `bg/4.jpg`) — sem colar
 PNG de personagem. Regenerar: `py -3 frontend/scripts/compose-layout-art.py`.
 
-Vesperlyn e Gemwright continuam em `ClubTheme` / `PortalTheme`. Os outros 18
+Vesperlyn e Gemwright continuam em `ClubTheme` / `PortalTheme`. Os outros 19
 passam por `TemplateShell` + `CatalogHomePage`. Login, cadastro e o restante
 do `AuthPanel` usam o casco `portal-auth-shell` (arte em `--tpl-art-hero`).
 No Vesperlyn o casco ganha `club-auth`: cartão central, brasão do Classic e

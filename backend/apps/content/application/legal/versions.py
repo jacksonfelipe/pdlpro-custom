@@ -63,7 +63,7 @@ LEGAL_DOCS_HISTORY: tuple[LegalVersionEntry, ...] = (
                 area="Publicação inicial",
                 reason=(
                     "Primeira publicação resumida de Termos, Privacidade e Acordo do Usuário "
-                    "no portal público do Dimes."
+                    "no portal público do DIMES."
                 ),
             ),
         ),

@@ -215,7 +215,7 @@ if [[ "$assume_yes" -ne 1 && -z "$write_config" && "$dry_run" -ne 1 ]]; then
   if [[ ! -t 0 ]]; then
     die "execução não interativa exige --yes"
   fi
-  printf '\nProxy HTTPS do PDL PRO (Nginx da máquina → Compose)\n\n'
+  printf '\nProxy HTTPS do DIMES (Nginx da máquina → Compose)\n\n'
   domain="$(prompt_value "Domínio" "$domain")"
   domain="${domain,,}"
   http_port="$(prompt_value "Porta do painel" "$http_port")"

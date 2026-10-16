@@ -1,4 +1,4 @@
-# Documentação do PDL PRO
+# Documentação do DIMES
 
 [Fonte única](projeto/fonte-unica.md)
 

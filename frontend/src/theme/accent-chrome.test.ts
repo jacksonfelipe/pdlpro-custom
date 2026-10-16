@@ -83,7 +83,7 @@ it('o catálogo clássico pinta cada composição com tokens, sem ouro cravado',
   for (const id of [
     'ironspine', 'ashenledger', 'warhorn', 'ironpatch', 'laurelwake', 'meridian',
     'twinwake', 'cartograph', 'classing', 'parchment', 'obsidian', 'hearthspire',
-    'goldleaf', 'lampmarket', 'bracket', 'eventide', 'wayfarer', 'watchfire',
+    'goldleaf', 'lampmarket', 'bracket', 'eventide', 'wayfarer', 'watchfire', 'hallowverde',
   ]) {
     expect(templates).toContain(`[data-theme-template="${id}"]`)
   }

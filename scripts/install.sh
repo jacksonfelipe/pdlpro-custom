@@ -7,7 +7,7 @@ source "${SCRIPT_DIR}/lib/common.sh"
 
 show_help() {
   cat <<'EOF'
-Prepara a configuração inicial e inicia o PDL PRO.
+Prepara a configuração inicial e inicia o DIMES.
 
 Uso:
   ./setup.sh install [--production|--no-dev] [--no-start] [--pull]

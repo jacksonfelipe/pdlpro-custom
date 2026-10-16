@@ -24,6 +24,7 @@ export type TemplateFamily =
   | 'theater'
   | 'path'
   | 'vigil'
+  | 'verdant'
 
 export type PublicTemplate = {
   id: ThemeCatalogId
@@ -240,6 +241,16 @@ export const PUBLIC_TEMPLATES: Record<ThemeCatalogId, PublicTemplate> = {
     mark: 'symbol',
     defaultSections: ['stats', 'hero', 'ranking', 'news', 'cta'],
     archetype: 'Vigília ao vivo: números do servidor são o hero (status bar da Essence virada página).',
+  },
+  hallowverde: {
+    id: 'hallowverde',
+    name: 'Hallow Verde',
+    family: 'verdant',
+    composition: 'verdant-citadel',
+    shell: 'banner',
+    mark: 'wordmark',
+    defaultSections: ['hero', 'stats', 'news', 'ranking', 'features', 'cta'],
+    archetype: 'Cidadela verde: vídeo de fundo, chamada central, mural de notícias e ranking diante das ruínas.',
   },
 }
 

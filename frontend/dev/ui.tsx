@@ -34,7 +34,7 @@ function Showcase() {
   const [richText, setRichText] = useState('<p>Escreva com <strong>negrito</strong>, listas e links.</p>')
   const action = useAsyncAction()
   return <main className="panel-app ui-showcase">
-    <PageHeader eyebrow="PDL PRO · Biblioteca de interface" title="Uma base para todas as telas" description="Componentes reais do painel. Explore estados, teclado e ações sem acessar a API." />
+    <PageHeader eyebrow="DIMES · Biblioteca de interface" title="Uma base para todas as telas" description="Componentes reais do painel. Explore estados, teclado e ações sem acessar a API." />
     <Tabs id="showcase" label="Catálogo" className="game-tabs" value={tab} onChange={setTab} items={[{ id: 'components', label: 'Componentes' }, { id: 'guidelines', label: 'Como usar' }]} />
     <section id="showcase-panel-components" role="tabpanel" aria-labelledby="showcase-tab-components" hidden={tab !== 'components'}>
       <div className="ui-showcase-grid">

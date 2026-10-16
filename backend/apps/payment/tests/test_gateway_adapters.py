@@ -257,7 +257,7 @@ def test_configurable_payment_descriptions(order, settings, mocker, description)
     settings.MERCADO_PAGO_PAYMENT_DESCRIPTION = description
     stripe_create = mocker.patch("stripe.PaymentIntent.create", return_value=SimpleNamespace(id="pi", client_secret="secret"))
     StripeGateway().create_checkout(order)
-    assert stripe_create.call_args.kwargs["description"] == (description.strip() or "Dimes — 50.00 moedas")
+    assert stripe_create.call_args.kwargs["description"] == (description.strip() or "DIMES — 50.00 moedas")
     sdk = mocker.patch("mercadopago.SDK").return_value
     create = sdk.payment.return_value.create
     create.return_value = {"status": 201, "response": {"id": "mp", "status": "pending"}}
@@ -312,7 +312,7 @@ def test_coin_name_in_payment_descriptions(order, settings, mocker, template):
     settings.MERCADO_PAGO_PAYMENT_DESCRIPTION = template
     stripe_create = mocker.patch("stripe.PaymentIntent.create", return_value=SimpleNamespace(id="pi", client_secret="secret"))
     StripeGateway().create_checkout(order)
-    assert stripe_create.call_args.kwargs["description"] == ("50.00 Blablabla Coin" if template else "Dimes — 50.00 Blablabla Coin")
+    assert stripe_create.call_args.kwargs["description"] == ("50.00 Blablabla Coin" if template else "DIMES — 50.00 Blablabla Coin")
     sdk = mocker.patch("mercadopago.SDK").return_value
     create = sdk.payment.return_value.create
     create.return_value = {"status": 201, "response": {"id": "mp", "status": "pending"}}

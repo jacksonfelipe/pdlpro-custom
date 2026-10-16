@@ -1,1 +1,1 @@
-"""Extensão Valorem para o Dimes."""
+"""Extensão Valorem para o DIMES."""

@@ -19,7 +19,7 @@ def admin_components(request):
 def backend_index(request):
     return JsonResponse(
         {
-            "product": "Dimes",
+            "product": "DIMES",
             "api": "/api/v1/",
             "docs": "/api/docs/swagger-ui/",
             "version": API_VERSION,

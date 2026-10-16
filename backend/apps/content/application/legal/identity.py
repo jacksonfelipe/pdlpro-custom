@@ -26,7 +26,7 @@ def get_legal_identity() -> LegalIdentity:
 
     return LegalIdentity(
         controller_name=getattr(settings, "LEGAL_CONTROLLER_NAME", "Operador do servidor"),
-        trade_name=getattr(settings, "LEGAL_TRADE_NAME", "Dimes"),
+        trade_name=getattr(settings, "LEGAL_TRADE_NAME", "DIMES"),
         cnpj=getattr(settings, "LEGAL_CNPJ", "00.000.000/0000-00"),
         address=getattr(settings, "LEGAL_ADDRESS", "Brasil"),
         contact_email=getattr(settings, "LEGAL_CONTACT_EMAIL", "contato@example.com"),

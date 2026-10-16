@@ -4,7 +4,7 @@
 
 > **Atualizado:** 25 de setembro de 2026
 
-O PDL PRO publica um pacote legal versionado para o painel Lineage 2: Termos de
+O DIMES publica um pacote legal versionado para o painel Lineage 2: Termos de
 uso, Política de privacidade, Acordo do usuário, Política de cookies e página
 LGPD, além do histórico público de versões.
 
@@ -25,7 +25,7 @@ Rotas SPA: `/terms`, `/privacy`, `/agreement`, `/cookies`, `/lgpd`,
 ## Identidade do controlador
 
 Cada deploy preenche os dados do operador (controlador LGPD) via env — ver
-[Configuração](../configuracao/ambiente.md). O software PDL PRO é o painel; o
+[Configuração](../configuracao/ambiente.md). O software DIMES é o painel; o
 operador do servidor é o controlador dos dados daquele deploy.
 
 Antes de produção, revise os textos com assessoria jurídica e substitua os

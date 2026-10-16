@@ -41,7 +41,7 @@ No Docker Compose, valores definidos em `environment:` têm precedência sobre `
 | `REDIS_URL` | Cache, Channels e broker/result backend Celery | `redis://redis:6379/0` no Compose |
 | `REDIS_PASSWORD` | Senha exigida pelo Redis em produção (`--requirepass`); entra também na `REDIS_URL` | vazio em desenvolvimento, onde o Redis não é publicado |
 | `PRIVATE_MEDIA_ROOT` | Diretório dos arquivos que nunca são publicados (pacote de portabilidade LGPD) | `backend/private/` |
-| `PROJECT_TITLE` | Nome exibido pelo projeto (fallback de identidade) | `PDL PRO` |
+| `PROJECT_TITLE` | Nome exibido pelo projeto (fallback de identidade) | `DIMES` |
 | `PROJECT_DESCRIPTION` | Descrição pública inicial | `Painel Definitivo Lineage 2.0` |
 | `SITE_SEO_TITLE` | Título da aba / SEO quando o admin e o tema não preenchem | vazio (usa `PROJECT_TITLE`) |
 | `SITE_SEO_DESCRIPTION` | Meta description inicial | vazio (usa `PROJECT_DESCRIPTION`) |
@@ -52,7 +52,7 @@ No Docker Compose, valores definidos em `environment:` têm precedência sobre `
 | `FRONTEND_URL` | URL usada em links enviados ao usuário | `http://localhost:3000` |
 | `LEGAL_DOCS_VERSION` | Versão aceita dos documentos legais (bump força reaceitação) | `2026-09-10` |
 | `LEGAL_CONTROLLER_NAME` | Razão social / nome do controlador LGPD | `Operador do servidor` |
-| `LEGAL_TRADE_NAME` | Nome fantasia / marca do painel no deploy | `PDL PRO` |
+| `LEGAL_TRADE_NAME` | Nome fantasia / marca do painel no deploy | `DIMES` |
 | `LEGAL_CNPJ` | CNPJ do controlador | `00.000.000/0000-00` |
 | `LEGAL_ADDRESS` | Endereço do controlador | `Brasil` |
 | `LEGAL_CONTACT_EMAIL` | E-mail de contato geral | `contato@example.com` |

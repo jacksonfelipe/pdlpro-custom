@@ -302,6 +302,17 @@ it('o Obsidian fica no palco com dois atos e sem o banner repetido', async () =>
   expect(await screen.findByText('Cerco aberto')).toBeVisible()
 })
 
+it('o Hallow Verde preserva o vídeo de fundo e reúne o mural, status e ranking', async () => {
+  renderHome('hallowverde')
+  expect(document.querySelector('.tpl-hallow__hero .video video')).not.toBeNull()
+  expect(document.querySelector('.tpl-hallow__stats .tpl-stats')).not.toBeNull()
+  expect(document.querySelector('.tpl-hallow__news')).not.toBeNull()
+  expect(document.querySelector('.tpl-hallow__ranking .tpl-ranking')).not.toBeNull()
+  expect(screen.getByRole('link', { name: 'CRIAR CONTA' })).toBeVisible()
+  expect(screen.getByRole('link', { name: 'DOWNLOAD' })).toBeVisible()
+  expect(await screen.findByText('Cerco aberto')).toBeVisible()
+})
+
 it('o Hearthspire abre pelo mural e guarda as regras para depois', async () => {
   renderHome('hearthspire')
   expect(document.querySelector('.tpl-tavern__board')).not.toBeNull()

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Instalador público da versão publicada do PDL PRO (Linux).
+# Instalador público da versão publicada do DIMES (Linux).
 # Baixa o ZIP da GitHub Release, configura o .env e sobe o Compose com imagens GHCR.
 set -Eeuo pipefail
 
@@ -13,7 +13,7 @@ die() { printf '[ERRO] %s\n' "$*" >&2; exit 1; }
 
 show_help() {
   cat <<'EOF'
-Instala uma versão publicada do PDL PRO (imagens Docker + Compose).
+Instala uma versão publicada do DIMES (imagens Docker + Compose).
 
 Uso:
   ./install.sh --domain seudominio.com [--yes]
@@ -391,4 +391,4 @@ if [[ "${PDL_SKIP_DOCKER:-0}" == "1" ]]; then
 fi
 
 bash "${install_dir}/setup.sh" install --production
-success "PDL PRO ${resolved_version} em execução. Próximo passo: proxy HTTPS → http://${bind_address}:${http_port}"
+success "DIMES ${resolved_version} em execução. Próximo passo: proxy HTTPS → http://${bind_address}:${http_port}"

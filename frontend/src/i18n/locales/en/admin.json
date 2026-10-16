@@ -1265,7 +1265,7 @@
       "descriptionHint": "Text sent to the provider for new payments. Leave blank to use the default description.",
       "variablesHelp": "Variable help — {{provider}}",
       "variablesHint": "Use {quantidade} for the purchased quantity, {pacote} for the package code and {moeda} for the current virtual currency name. Example: {quantidade} {moeda} — {pacote}. Variables are replaced in new charges from both providers. Unknown variables remain literal. Leave blank to use the default.",
-      "stripeDescriptionPlaceholder": "Dimes — {quantidade} {{coinName}}",
+      "stripeDescriptionPlaceholder": "DIMES — {quantidade} {{coinName}}",
       "mpDescriptionPlaceholder": "{{coinNameTitle}} PDL ({pacote})",
       "stripePresentmentHint": "Supported charge currencies in Stripe, comma-separated. E.g.: BRL, USD, EUR",
       "coinNameHint": "Up to 40 characters. E.g. Blablabla Coin. Used in balances, prices, top-ups and transfers. Leave blank to use the active language name.",
@@ -1511,7 +1511,7 @@
       "files": "Files at the root: <c>theme.json</c>, <c>theme.css</c>, optional <c>metadados.json</c> and <c>locales/</c>, folders <c>images/</c> and <c>fonts/</c>",
       "accepted": "Accepted: CSS, images, local fonts, <c>metadados.json</c> and <c>locales/{pt,en,es}.json</c> pointed to by <c>theme.json</c>",
       "blocked": "Blocked: scripts, executable HTML, Markdown and path traversal",
-      "renderer": "Catalog of 20 layouts (Vesperlyn, Ironspine, Warhorn…) or aliases <c>portal-v1</c> and <c>club-v1</c>",
+      "renderer": "Catalog of 21 layouts (Vesperlyn, Hallow Verde, Ironspine, Warhorn…) or aliases <c>portal-v1</c> and <c>club-v1</c>",
       "activation": "Installing ≠ activating: activate it in the catalog after validation"
     },
     "catalogEyebrow": "Catalog",

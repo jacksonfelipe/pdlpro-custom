@@ -66,11 +66,11 @@ que dependem somente do banco do PDL.
 
 ## Preparação do schema e colunas do PDL (`ensure_columns`)
 
-O PDL PRO requer três colunas específicas na tabela `accounts` do banco do Lineage 2:
+O DIMES requer três colunas específicas na tabela `accounts` do banco do Lineage 2:
 
 - `email`: `VARCHAR(100) NOT NULL DEFAULT ''` — associação, busca e vínculo por e-mail.
 - `created_time`: `INT NULL DEFAULT NULL` — registro do timestamp de criação da conta.
-- `linked_uuid`: `VARCHAR(36) NULL DEFAULT NULL` — UUID do usuário no PDL PRO que gerencia a conta do jogo.
+- `linked_uuid`: `VARCHAR(36) NULL DEFAULT NULL` — UUID do usuário no DIMES que gerencia a conta do jogo.
 
 ### Execução automática transparente
 

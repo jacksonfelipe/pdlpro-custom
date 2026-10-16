@@ -91,7 +91,7 @@ cloud_test() {
   probe_dir="$(backup_dir)"
   mkdir -p "$probe_dir"
   probe_name=".pdl-cloud-test-$(date -u +'%Y%m%dT%H%M%SZ')"
-  printf 'PDL PRO backup probe\n' > "${probe_dir}/${probe_name}"
+  printf 'DIMES backup probe\n' > "${probe_dir}/${probe_name}"
   info "Testando escrita, listagem e remoção em ${remote}..."
   local status=0
   if ! rclone_run copyto "${probe_dir}/${probe_name}" "$(remote_join "$remote" "$probe_name")"; then
@@ -237,7 +237,7 @@ cloud_schedule() {
     mkdir -p "$dir"
     cat > "${dir}/${unit}.service" <<EOF
 [Unit]
-Description=PDL PRO: backup do banco, mídia e envio para a nuvem
+Description=DIMES: backup do banco, mídia e envio para a nuvem
 Wants=network-online.target
 After=network-online.target docker.service
 
@@ -249,7 +249,7 @@ ExecStart=/usr/bin/env bash ${ROOT_DIR}/setup.sh backup
 EOF
     cat > "${dir}/${unit}.timer" <<EOF
 [Unit]
-Description=PDL PRO: backup diário às ${time}
+Description=DIMES: backup diário às ${time}
 
 [Timer]
 OnCalendar=*-*-* ${hour}:${minute}:00

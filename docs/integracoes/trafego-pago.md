@@ -1,6 +1,6 @@
 # Tráfego Pago e Analytics (Pixels, Google Ads e Gtag)
 
-O PDL PRO possui suporte nativo e centralizado para ferramentas de tráfego pago,
+O DIMES possui suporte nativo e centralizado para ferramentas de tráfego pago,
 remarketing e análise de métricas, configuráveis pelo painel administrativo, com variáveis de ambiente
 (`.env`) como padrão sem necessidade de alterar o código-fonte da aplicação.
 
@@ -153,7 +153,7 @@ O sistema já monitora os principais marcos da jornada do jogador no servidor:
 
 ## 5. Conformidade com LGPD / GDPR
 
-O PDL PRO inclui gerenciador de consentimento de cookies na SPA:
+O DIMES inclui gerenciador de consentimento de cookies na SPA:
 - **Cookies de Analytics:** Controlam o carregamento e disparo do Google Analytics (`gtag`).
 - **Cookies de Marketing:** Controlam o Meta Pixel, TikTok Pixel e tags de remarketing do Google Ads.
 - **Google Consent Mode v2:** Ativado nativamente. Se o visitante recusar cookies de

@@ -83,12 +83,12 @@ class GetServerInfoUseCase(UseCase[None, ServerInfo]):
             chronicle = CHRONICLE_BY_MODULE.get(module, module.capitalize() if module else "Lineage 2")
         features = [item.strip() for item in getattr(settings, "SERVER_FEATURES", []) if str(item).strip()]
         theme = self._packaged_metadata.get_overlay()
-        env_name = str(getattr(settings, "PROJECT_TITLE", "Dimes"))
+        env_name = str(getattr(settings, "PROJECT_TITLE", "DIMES"))
         env_description = str(getattr(settings, "PROJECT_DESCRIPTION", ""))
         env_seo_title = first_text(getattr(settings, "SITE_SEO_TITLE", ""), env_name)
         env_seo_description = first_text(getattr(settings, "SITE_SEO_DESCRIPTION", ""), env_description)
         env_og_image = str(getattr(settings, "SITE_OG_IMAGE", "") or "")
-        name = first_text(theme.get("name"), env_name) or "Dimes"
+        name = first_text(theme.get("name"), env_name) or "DIMES"
         slogan = first_text(theme.get("slogan"))
         description = first_text(theme.get("description"), env_description)
         seo_title = first_text(theme.get("seo_title"), env_seo_title, name)
