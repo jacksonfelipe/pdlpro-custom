@@ -32,43 +32,6 @@ if not exist ".git" (
     exit /b 1
 )
 
-:: -----------------------------------------------------------------------
-:: Verifica identidade git (user.name e user.email) — necessario para commits
-:: -----------------------------------------------------------------------
-:CHECK_IDENTITY
-set GIT_USER_NAME=
-set GIT_USER_EMAIL=
-for /f "delims=" %%N in ('git config user.name 2^>nul') do set GIT_USER_NAME=%%N
-for /f "delims=" %%E in ('git config user.email 2^>nul') do set GIT_USER_EMAIL=%%E
-
-if "!GIT_USER_NAME!"=="" (
-    cls
-    echo ===============================================================================
-    echo  [CONFIGURACAO INICIAL] Identidade Git nao encontrada para este usuario
-    echo ===============================================================================
-    echo  O Git precisa saber quem voce e para registrar os commits corretamente.
-    echo  Isso so precisa ser feito uma vez nesta maquina.
-    echo ===============================================================================
-    echo.
-    set /p GIT_USER_NAME="Seu nome completo ou apelido (ex: jacksonfelipe): "
-    if "!GIT_USER_NAME!"=="" set GIT_USER_NAME=jacksonfelipe
-    git config --global user.name "!GIT_USER_NAME!"
-    echo [OK] Nome registrado: !GIT_USER_NAME!
-    echo.
-)
-
-if "!GIT_USER_EMAIL!"=="" (
-    echo  Email nao configurado. Pode usar o email do GitHub no formato:
-    echo  usuario@users.noreply.github.com
-    echo.
-    set /p GIT_USER_EMAIL="Seu email (ENTER para usar jacksonfelipe@users.noreply.github.com): "
-    if "!GIT_USER_EMAIL!"=="" set GIT_USER_EMAIL=jacksonfelipe@users.noreply.github.com
-    git config --global user.email "!GIT_USER_EMAIL!"
-    echo [OK] Email registrado: !GIT_USER_EMAIL!
-    echo.
-    timeout /t 2 >nul
-)
-
 :MENU
 cls
 :: Detecta branch atual
